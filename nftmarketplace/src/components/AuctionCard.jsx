@@ -8,16 +8,16 @@ const rarityBorderColors = {
     epic: "border-black hover:border-purple-500",
     legendary: "border-black hover:border-yellow-400",
     mythic: "border-black hover:border-pink-500"
-  };
-  
-  const rarityTextColors = {
+};
+
+const rarityTextColors = {
     common: "text-gray-400",
     uncommon: "text-green-500",
     rare: "text-blue-500",
     epic: "text-purple-500",
     legendary: "text-yellow-400",
     mythic: "text-pink-500"
-  };
+};
 
 // not sure what the item prop will be
 function AuctionCard({ item }) {

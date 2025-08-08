@@ -1,196 +1,152 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; 
-import AuctionCard from '../components/AuctionCard'; 
-import Footer from '../components/Footer'; 
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import AuctionCard from '../components/AuctionCard';
+import Footer from '../components/Footer';
 
 const AuctionPage = () => {
-  const [visibleItems, setVisibleItems] = useState(12);
-
-  const auctionData = [
+  // ai ahh mock data
+  const nftData = [
     {
-      UID: 'auction001',
-      nftName: 'Digital Dragon',
+      id: 'nftaddress1',
+      name: 'Digital Dragon',
       description: 'A fierce digital dragon with glowing eyes.',
-      asset_url: '🐉',
+      mediaURL: '🐉',
+      owner: '0xDRAGONLORD', // placeholder Sui address
+      prevOwners: ['0xCOLLECTOR1'],
       level: 3,
-      XP: 400,
+      xp: 400,
+      xp_to_next_level: 500, // placeholder
       rarity: 'rare',
-      currentBid: '8.50 SUI',
-      minimumBid: '5.00 SUI',
-      currentOwner: '@dragonlord',
-      previousOwners: ['@collector1'],
-      tags: ['dragon', 'fantasy', 'art'],
-      endingTime: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // 2 days
+      auctionRecord: ['auction001']
     },
     {
-      UID: 'auction002',
-      nftName: 'Cyber Samurai',
+      id: 'nftaddress2',
+      name: 'Cyber Samurai',
       description: 'A futuristic samurai warrior in neon colors.',
-      asset_url: '🥷',
+      mediaURL: '🥷',
+      owner: '0xCYBERPUNK', // placeholder
+      prevOwners: ['0xWARRIOR', '0xCOLLECTOR2'],
       level: 4,
-      XP: 600,
+      xp: 600,
+      xp_to_next_level: 800,
       rarity: 'epic',
-      currentBid: '15.20 SUI',
-      minimumBid: '10.00 SUI',
-      currentOwner: '@cyberpunk',
-      previousOwners: ['@warrior', '@collector2'],
-      tags: ['samurai', 'cyberpunk', 'warrior'],
-      endingTime: new Date(Date.now() + 5 * 60 * 60 * 1000), // 5 hours
+      auctionRecord: ['auction002']
     },
     {
-      UID: 'auction003',
-      nftName: 'Galaxy Explorer',
+      id: 'nftaddress3',
+      name: 'Galaxy Explorer',
       description: 'An astronaut exploring distant galaxies.',
-      asset_url: '👨‍🚀',
+      mediaURL: '👨‍🚀',
+      owner: '0xSPACEMAN',
+      prevOwners: [],
       level: 2,
-      XP: 280,
+      xp: 280,
+      xp_to_next_level: 350,
       rarity: 'uncommon',
-      currentBid: '6.80 SUI',
-      minimumBid: '4.50 SUI',
-      currentOwner: '@spaceman',
-      previousOwners: [],
-      tags: ['space', 'explorer', 'galaxy'],
-      endingTime: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000), // 1 day 
+      auctionRecord: ['auction003']
     },
     {
-      UID: 'auction004',
-      nftName: 'Mystic Wizard',
+      id: 'nftaddress4',
+      name: 'Mystic Wizard',
       description: 'A powerful wizard casting magical spells.',
-      asset_url: '🧙‍♂️',
+      mediaURL: '🧙‍♂️',
+      owner: '0xMAGICMASTER',
+      prevOwners: ['0xWIZARD1', '0xCOLLECTOR3', '0xMYSTIC'],
       level: 5,
-      XP: 800,
+      xp: 800,
+      xp_to_next_level: 1000,
       rarity: 'legendary',
-      currentBid: '25.00 SUI',
-      minimumBid: '18.00 SUI',
-      currentOwner: '@magicmaster',
-      previousOwners: ['@wizard1', '@collector3', '@mystic'],
-      tags: ['wizard', 'magic', 'fantasy'],
-      endingTime: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days 
-    },
-    {
-      UID: 'auction005',
-      nftName: 'Ocean Guardian',
-      description: 'A majestic whale protecting the ocean depths.',
-      asset_url: '🐋',
-      level: 2,
-      XP: 250,
-      rarity: 'uncommon',
-      currentBid: '7.30 SUI',
-      minimumBid: '5.50 SUI',
-      currentOwner: '@oceankeeper',
-      previousOwners: ['@mariner'],
-      tags: ['whale', 'ocean', 'nature'],
-      endingTime: new Date(Date.now() + 12 * 60 * 60 * 1000), // 12 hours
-    },
-    {
-      UID: 'auction006',
-      nftName: 'Phoenix Rising',
-      description: 'A legendary phoenix emerging from flames.',
-      asset_url: '🔥',
-      level: 4,
-      XP: 650,
-      rarity: 'epic',
-      currentBid: '18.75 SUI',
-      minimumBid: '12.00 SUI',
-      currentOwner: '@firebird',
-      previousOwners: ['@phoenix1', '@flame'],
-      tags: ['phoenix', 'fire', 'mythology'],
-      endingTime: new Date(Date.now() + 6 * 60 * 60 * 1000), // 6 hours 
-    },
-    {
-      UID: 'auction007',
-      nftName: 'Crystal Crown',
-      description: 'A royal crown made of pure crystal.',
-      asset_url: '👑',
-      level: 3,
-      XP: 450,
-      rarity: 'rare',
-      currentBid: '12.40 SUI',
-      minimumBid: '8.00 SUI',
-      currentOwner: '@royalty',
-      previousOwners: ['@king', '@queen'],
-      tags: ['crown', 'royal', 'luxury'],
-      endingTime: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000), // 4 days 
-    },
-    {
-      UID: 'auction008',
-      nftName: 'Lightning Strike',
-      description: 'Captured moment of a powerful lightning bolt.',
-      asset_url: '⚡',
-      level: 1,
-      XP: 150,
-      rarity: 'common',
-      currentBid: '3.20 SUI',
-      minimumBid: '2.00 SUI',
-      currentOwner: '@stormchaser',
-      previousOwners: [],
-      tags: ['lightning', 'storm', 'nature'],
-      endingTime: new Date(Date.now() + 8 * 60 * 60 * 1000), // 8 hours 
-    },
-    {
-      UID: 'auction009',
-      nftName: 'Golden Tiger',
-      description: 'A majestic golden tiger in its natural habitat.',
-      asset_url: '🐅',
-      level: 3,
-      XP: 380,
-      rarity: 'rare',
-      currentBid: '9.60 SUI',
-      minimumBid: '6.50 SUI',
-      currentOwner: '@wildkeeper',
-      previousOwners: ['@jungle', '@safari'],
-      tags: ['tiger', 'wildlife', 'gold'],
-      endingTime: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // 2 days 
-    },
-    {
-      UID: 'auction010',
-      nftName: 'Diamond Heart',
-      description: 'A sparkling diamond heart symbolizing eternal love.',
-      asset_url: '💎',
-      level: 4,
-      XP: 520,
-      rarity: 'epic',
-      currentBid: '16.90 SUI',
-      minimumBid: '11.00 SUI',
-      currentOwner: '@gemcollector',
-      previousOwners: ['@diamond', '@jeweler'],
-      tags: ['diamond', 'heart', 'luxury'],
-      endingTime: new Date(Date.now() + 18 * 60 * 60 * 1000), // 18 hours 
-    },
-    {
-      UID: 'auction011',
-      nftName: 'Moonlight Wolf',
-      description: 'A mystical wolf howling under the moonlight.',
-      asset_url: '🐺',
-      level: 2,
-      XP: 300,
-      rarity: 'uncommon',
-      currentBid: '5.80 SUI',
-      minimumBid: '4.00 SUI',
-      currentOwner: '@moonhowler',
-      previousOwners: ['@packleader'],
-      tags: ['wolf', 'moon', 'mystical'],
-      endingTime: new Date(Date.now() + 30 * 60 * 60 * 1000), // 30 hours 
-    },
-    {
-      UID: 'auction012',
-      nftName: 'Rainbow Butterfly',
-      description: 'A colorful butterfly with rainbow wings.',
-      asset_url: '🦋',
-      level: 1,
-      XP: 120,
-      rarity: 'common',
-      currentBid: '2.90 SUI',
-      minimumBid: '1.80 SUI',
-      currentOwner: '@naturelover',
-      previousOwners: [],
-      tags: ['butterfly', 'rainbow', 'nature'],
-      endingTime: new Date(Date.now() + 14 * 60 * 60 * 1000), // 14 hours
+      auctionRecord: ['auction004']
     }
   ];
 
+  const auctionData = [
+    {
+      id: 'auction001',
+      nft: 'nftaddress1',
+      minPrice: 5.00,
+      starting: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+      ending: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // 2 days from now
+      highestBidID: 'bid001',
+    },
+    {
+      id: 'auction002',
+      nft: 'nftaddress2',
+      minPrice: 10.00,
+      starting: new Date(Date.now()), // starts now
+      ending: new Date(Date.now() + 5 * 60 * 60 * 1000), // 5 hours from now
+      highestBidID: 'bid002',
+    },
+    {
+      id: 'auction003',
+      nft: 'nftaddress3',
+      minPrice: 4.50,
+      starting: new Date(Date.now()),
+      ending: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000), // 1 day from now
+      highestBidID: 'bid003',
+    },
+    {
+      id: 'auction004',
+      nft: 'nftaddress4',
+      minPrice: 18.00,
+      starting: new Date(Date.now()),
+      ending: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days from now
+      highestBidID: 'bid004',
+    }
+  ];
 
-  const displayedAuctions = auctionData.slice(0, visibleItems);
+  const bidData = [
+    {
+      id: 'bid001',
+      auctionID: 'auction001',
+      bidder: '0xBIDDER1',
+      amount: 8.50,
+      time: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000) // 1 day ago
+    },
+    {
+      id: 'bid002',
+      auctionID: 'auction002',
+      bidder: '0xBIDDER2',
+      amount: 15.20,
+      time: new Date(Date.now() + 1 * 60 * 60 * 1000) // 1 hour from now (example future bid)
+    },
+    {
+      id: 'bid003',
+      auctionID: 'auction003',
+      bidder: '0xBIDDER3',
+      amount: 6.80,
+      time: new Date(Date.now() - 5 * 60 * 60 * 1000) // 5 hours ago
+    },
+    {
+      id: 'bid004',
+      auctionID: 'auction004',
+      bidder: '0xBIDDER4',
+      amount: 25.00,
+      time: new Date(Date.now() - 2 * 60 * 60 * 1000) // 2 hours ago
+    }
+  ];
+
+  const [trendingAuctions, setTrendingAuctions] = useState([]);
+
+  useEffect(() => {
+    setTrendingAuctions(auctionData.map(auction => {
+      // Find NFT by matching auction id in its auctionRecord
+      const nftObject = nftData.find(n => n.id === auction.nft);
+
+      // Find the highest bid for this auction
+      const highestBid = bidData.find(bid => bid.id === auction.highestBidID);
+
+      return {
+        ...auction,
+        nftObject,
+        highestBid
+      };
+    }));
+  }, [])
+
+  const [visibleItems, setVisibleItems] = useState(12);
+
+  const displayedAuctions = trendingAuctions.slice(0, visibleItems);
 
   const loadMore = () => {
     setVisibleItems(prev => prev + 8);
@@ -251,11 +207,11 @@ const AuctionPage = () => {
   return (
     <div className="bg-black text-white min-h-screen">
       <AuctionHeader />
-  
+
       <div className="max-w-7xl mx-auto px-4 lg:px-6">
-      
+
         <ResultsCount count={auctionData.length} />
-  
+
         {auctionData.length > 0 ? (
           <>
             <AuctionGrid displayedAuctions={displayedAuctions} />
@@ -265,10 +221,10 @@ const AuctionPage = () => {
             )}
           </>
         ) : (
-          <NoResults/>
+          <NoResults />
         )}
       </div>
-  
+
       <Footer />
     </div>
   );

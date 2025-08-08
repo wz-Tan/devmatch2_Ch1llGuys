@@ -97,7 +97,7 @@ function TrendingAuctions() {
 
     const bidData = [
         {
-            id: 'randomBidID',
+            id: 'bid001',
             auctionID: 'auction001',
             bidder: '0xBIDDER1',
             amount: 8.50,
@@ -126,24 +126,25 @@ function TrendingAuctions() {
         }
     ];
 
-    const [trendingAuctions,setTrendingAuctions] = useState([]);
+    const [trendingAuctions, setTrendingAuctions] = useState([]);
 
-    useEffect(()=>{
+    useEffect(() => {
         setTrendingAuctions(auctionData.map(auction => {
             // Find NFT by matching auction id in its auctionRecord
             const nftObject = nftData.find(n => n.id === auction.nft);
-        
+
             // Find the highest bid for this auction
             const highestBid = bidData.find(bid => bid.id === auction.highestBidID);
+
             return {
                 ...auction,
                 nftObject,
                 highestBid
             };
         }));
-    },[])
+    }, [])
 
-    
+
     return (
         <section className="px-8 py-12 my-10">
             <div className="flex items-center justify-between mb-8">
