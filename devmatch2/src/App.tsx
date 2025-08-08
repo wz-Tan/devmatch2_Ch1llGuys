@@ -1,60 +1,30 @@
 import { ConnectButton, useCurrentAccount } from "@mysten/dapp-kit";
-import { isValidSuiObjectId } from "@mysten/sui/utils";
 import { Box, Container, Flex, Heading } from "@radix-ui/themes";
-import { useState } from "react";
-import { Counter } from "./Counter";
-import { CreateCounter } from "./marketplace";
+import { WalletStatus } from "./WalletStatus";
+import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from "react-router-dom";
+import "./index.css"
+import Layout from "./Layout";
+import Minting from "./pages/Minting";
+import Landing from "./pages/Landing";
+import Auction from "./pages/Auction";
+import Owned from "./pages/Owned";
 
-function App() {
-  const currentAccount = useCurrentAccount();
-  const [counterId, setCounter] = useState(() => {
-    const hash = window.location.hash.slice(1);
-    return isValidSuiObjectId(hash) ? hash : null;
-  });
+function App() { 
 
+  const router=createBrowserRouter(
+    createRoutesFromElements(
+      <Route path="/" element={<Layout/>}>
+        <Route index element={<Landing/>}/>
+        <Route path="/minting" element={<Minting/>}/>
+        <Route path="/auction" element={<Auction/>}/>
+        <Route path="/owned" element={<Owned/>}/>
+        <Route path="*" element={<h1 className="text-white text-center text-6xl">Oops. Seems Like There's No Content Here.</h1>}/>
+      </Route>
+    )
+  )
+  
   return (
-    <>
-      <Flex
-        position="sticky"
-        px="4"
-        py="2"
-        justify="between"
-        style={{
-          borderBottom: "1px solid var(--gray-a2)",
-        }}
-      >
-        <Box>
-          <Heading>dApp Starter Template</Heading>
-        </Box>
-
-        <Box>
-          <ConnectButton />
-        </Box>
-      </Flex>
-      <Container>
-        <Container
-          mt="5"
-          pt="2"
-          px="4"
-          style={{ background: "var(--gray-a2)", minHeight: 500 }}
-        >
-          {currentAccount ? (
-            counterId ? (
-              <Counter id={counterId} />
-            ) : (
-              <CreateCounter
-                onCreated={(id) => {
-                  window.location.hash = id;
-                  setCounter(id);
-                }}
-              />
-            )
-          ) : (
-            <Heading>Please connect your wallet</Heading>
-          )}
-        </Container>
-      </Container>
-    </>
+    <RouterProvider router={router}/>
   );
 }
 
