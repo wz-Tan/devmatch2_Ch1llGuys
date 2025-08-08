@@ -2,7 +2,8 @@ import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from '@
 import React, { useEffect, useState } from 'react'
 import { useNetworkVariable } from '../networkConfig';
 import { Transaction } from '@mysten/sui/transactions';
-import { AUCTIONHOUSE_ID, CLOCK_ID } from '../constants';
+import { AUCTIONHOUSE_ID, CLOCK_ID, NFT_TYPE } from '../constants';
+import { Button } from '@radix-ui/themes';
 
 const Auction = () => {
   const userAccount= useCurrentAccount();
@@ -27,7 +28,7 @@ const Auction = () => {
     //Get Auction Bag ID
     let auctionBagId;
     if (auctionHouse.data?.content?.dataType === "moveObject") {
-      auctionBagId = (auctionHouse as any).data.content.fields.listingBag.fields.id.id
+      auctionBagId = (auctionHouse as any).data.content.fields.auctionBag.fields.id.id
     }
 
     //Get Auction Bag Fields
@@ -47,6 +48,9 @@ const Auction = () => {
     }))
 
     setAuctions(actualListings);
+    console.log(actualListings)
+    console.log("Retrieved Auctions")
+    console.log("Auctions", auctions)
   }
 
   async function startAuction(minPrice:number, duration:number, nft:string){
@@ -138,7 +142,21 @@ const Auction = () => {
     }
 
   return (
+    <>
     <div>Auction</div>
+    <Button
+      onClick={()=>{
+        startAuction(1,3,"0x90d62e771b6e49e5b970fe03333e51895829a8fd596f50dac4b7250805237e1b")
+      }}>
+      Create Auction
+    </Button>
+
+
+    {auctions.map((auction)=>(
+      <h1 className='text-3xl text-white'>An Auction</h1>
+    ))}
+    </>
+    
   )
 }
 
