@@ -1,4 +1,4 @@
-import hero from '../assets/hero/hero.png';
+import hero from '../assets/hero.png';
 import { Link } from 'react-router-dom';
 
 function HeroSection() {
@@ -19,7 +19,13 @@ function HeroSection() {
                             Explore
                         </button>
                     </Link>
-                    {/* another link to minting page? */}
+
+                    {/* jianming will do */}
+                    <Link>
+                        <button className="border border-gray-600 hover:border-gray-400 px-8 py-3 rounded-lg">
+                            Upload
+                        </button>
+                    </Link>
                 </div>
             </div>
             <div className="flex-1 flex justify-center">
