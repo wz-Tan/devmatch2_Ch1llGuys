@@ -73,7 +73,7 @@ function TrendingNFTSection(){
         ))}
       </div>
       {/* add a proper link to marketplace later */}
-      <Link to="/"> 
+      <Link to="/marketplace"> 
         <div className="text-center mt-8">
           <button className="border border-gray-600 hover:border-gray-400 px-8 py-3 rounded-lg">
             Explore More

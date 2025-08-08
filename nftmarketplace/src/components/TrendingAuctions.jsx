@@ -73,14 +73,6 @@ function TrendingAuctions() {
                     <div className="text-orange-500 text-sm font-medium mb-2">LIVE AUCTION</div>
                     <h2 className="text-3xl font-bold">Trending Auctions</h2>
                 </div>
-                <div className="flex space-x-2">
-                    <button className="p-2 bg-gray-900 rounded-lg hover:bg-gray-800">
-                        <ChevronLeft className="w-5 h-5" />
-                    </button>
-                    <button className="p-2 bg-gray-900 rounded-lg hover:bg-gray-800">
-                        <ChevronRight className="w-5 h-5" />
-                    </button>
-                </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 {trendingAuctions.map((item, index) => (
