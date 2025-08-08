@@ -9,7 +9,15 @@ function Navbar() {
           N
         </Link>
         <nav className="hidden md:flex space-x-8">
-          {/* add nav bar links */}
+          <Link to="/marketplace" className="text-gray-300 hover:text-white">
+            Marketplace
+          </Link>
+          <Link to="/auctions" className="text-gray-300 hover:text-white">
+            Auctions
+          </Link>
+          <Link to="/my-collections" className="text-gray-300 hover:text-white">
+            Owned NFT
+          </Link>
         </nav>
           
       </header>
