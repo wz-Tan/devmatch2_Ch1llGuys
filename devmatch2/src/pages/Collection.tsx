@@ -4,18 +4,18 @@ import { NFT_TYPE } from '../constants';
 
 //Shows All Owned NFTs
 const Collection = () => {
-  const userAccount = useCurrentAccount();
+  let userAccount = useCurrentAccount();
   const suiClient = useSuiClient();
 
   const [collectionItems, setCollectionItems] = useState<any[]>([])
 
   //How To Load Better? Inconsistent
   useEffect(()=>{
-    retrieveCollection()},[]
+    if (userAccount) retrieveCollection()},
+    [userAccount]
   )
 
   async function retrieveCollection() {
-    console.log("User Account is", userAccount?.address)
     if (!userAccount) return
 
     let userAssets: object[] = []

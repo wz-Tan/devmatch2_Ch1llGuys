@@ -45,7 +45,7 @@ const Landing = () => {
           showContent: true
         }
       })
-      actualListings.push(listing)
+      actualListings.push((listing as any).data.content.fields)
     }))
 
     setMarketplaceItems(actualListings);
@@ -55,6 +55,7 @@ const Landing = () => {
   //Create A New Listing
   async function createListing(nft: string, price: number) {
     const tx = new Transaction();
+    price=Math.floor(price*1e9);
 
     tx.moveCall({
       arguments: [tx.object(MARKETPLACE_ID), tx.object(nft), tx.pure.u64(price), tx.object(CLOCK_ID)],
@@ -177,15 +178,19 @@ const Landing = () => {
     <>
     <div>Landing</div>
     <Button
-      onClick={()=>{}}>
+      onClick={()=>{
+        buyListing("0x5d54cdbc06714919e4a258c3f1ac1df8e6b2249add2a9042df8d405f640804f0")
+      }}>
       Buy Listing
     </Button>
     <Button
-      onClick={()=>{}}>
+      onClick={()=>{
+        deleteListing("0x59610e1d5fd3650670ef67fbe6d876de803c2c9b2c8d8612f49612e02ba4270a")
+      }}>
       Delete Listing
     </Button>
     <Button
-      onClick={()=>{}}>
+      onClick={()=>{createListing("0x90d62e771b6e49e5b970fe03333e51895829a8fd596f50dac4b7250805237e1b",0.01)}}>
       Add Listing
     </Button>
     {marketplaceItems.map((item)=>(
