@@ -2,7 +2,7 @@
 // import { Box, Container, Flex, Heading } from "@radix-ui/themes";
 // import { WalletStatus } from "./WalletStatus";
 import { Marketplace } from "./marketplace";
-import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, createRoutesFromElemenAngts, Route, RouterProvider } from "react-router-dom";
 import "./index.css"
 import Layout from "./Layout";
 import Minting from "./pages/Minting";
