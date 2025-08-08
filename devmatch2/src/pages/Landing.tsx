@@ -49,7 +49,6 @@ const Landing = () => {
     }))
 
     setMarketplaceItems(actualListings);
-    console.log(actualListings)
   }
 
   //Create A New Listing
@@ -62,7 +61,6 @@ const Landing = () => {
       target: `${packageID}::marketplace::createListing`
     });
 
-    //Continue Here
     signAndExecute({ transaction: tx },
       {
         onSuccess: async ({ digest }) => {
