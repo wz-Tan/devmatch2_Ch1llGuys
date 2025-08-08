@@ -1,2 +1,4 @@
 build/*
 devmatch2/node_modules/*
+.venv/
+.env
