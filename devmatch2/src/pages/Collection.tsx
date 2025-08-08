@@ -9,9 +9,13 @@ const Collection = () => {
 
   const [collectionItems, setCollectionItems] = useState<any[]>([])
 
-  useEffect(()=>{retrieveCollection(),[]})
+  //How To Load Better? Inconsistent
+  useEffect(()=>{
+    retrieveCollection()},[]
+  )
 
   async function retrieveCollection() {
+    console.log("User Account is", userAccount?.address)
     if (!userAccount) return
 
     let userAssets: object[] = []
@@ -40,7 +44,7 @@ const Collection = () => {
     )
 
     setCollectionItems(userAssets)
-    console.log("All user assets",userAssets)
+    console.log(userAssets)
   }
 
   return (
