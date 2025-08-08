@@ -14,7 +14,7 @@ function HeroSection() {
                     Collect And Sell Your Extraordinary Artwork.
                 </p>
                 <div className="flex space-x-4">
-                    <Link to={"/"} >
+                    <Link to={"/marketplace"} >
                         <button className="bg-orange-500 hover:bg-orange-600 px-8 py-3 rounded-lg font-medium">
                             Explore
                         </button>
