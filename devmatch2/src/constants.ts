@@ -4,3 +4,4 @@
   export const MARKETPLACE_ID="0x1563a56d72102cc5b40d5202b3a28e7ca3e8cebd37b1cde5fd3282808b5ef94e";
   export const AUCTIONHOUSE_ID="0x6550c76b88474e686f944cc73a0384bf8b37deec56a83b17f49e9a35f18706d8";
   export const CLOCK_ID="0x6";
+  export const NFT_TYPE= "0xd8b04877d7402c25904fd727795f6737773eb37cbe0b2df700f290922ec4db89::nft::NFT"

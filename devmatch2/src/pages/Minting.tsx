@@ -1,5 +1,5 @@
 import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from '@mysten/dapp-kit'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useNetworkVariable } from '../networkConfig';
 import { Transaction } from '@mysten/sui/transactions';
 
@@ -20,7 +20,15 @@ const Minting = () => {
         });
 
         signAndExecute({transaction: tx})
+    }
 
+    useEffect(()=>{
+      mintNFT(generateSeed(),"haha","desc","")
+    },[])
+
+    //Get Randomised Seed for Rarity (Slot in as Argument)
+    function generateSeed(): number{
+      return Math.floor(Math.random() * 100000);
     }
 
   return (
