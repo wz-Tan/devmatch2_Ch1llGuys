@@ -18,7 +18,8 @@ const AuctionNFTDetails = () => {
   const getHighestBid=async ()=>{
     try{
       let response=await suiClient.getObject({id:highestBidID,options:{showContent:true,showDisplay:true}});
-      setHighestBid(response.data)
+      setHighestBid((response as any).data?.content.fields)
+      console.log(highestBid)
     }
     catch(err){
       setHighestBid(null)

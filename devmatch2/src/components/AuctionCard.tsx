@@ -107,7 +107,7 @@ const AuctionCard = ({auction}:{auction:any}) => {
                 <div className="text-center mb-4">
                     <div className="text-xs text-gray-400 mb-1">Ends in:</div>
                     <div className="text-orange-500 font-semibold text-sm">
-                        {useCountdown(auction.ending)}
+                        End Date 
                     </div>
                 </div>
 

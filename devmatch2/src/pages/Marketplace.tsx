@@ -14,9 +14,9 @@ const Marketplace = () => {
   const userAccount = useCurrentAccount();
   const suiClient = useSuiClient();
   const packageID = useNetworkVariable("PackageId");
-
+const { mutate: signAndExecute } = useSignAndExecuteTransaction();
   const [marketplaceItems, setMarketplaceItems] = useState<any[]>([])
-  const { mutate: signAndExecute } = useSignAndExecuteTransaction();
+  
 
   useEffect(() => { retrieveMarketplace() }, [])
 
