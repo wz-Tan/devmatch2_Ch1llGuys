@@ -20,12 +20,7 @@ function HeroSection() {
             </button>
           </Link>
 
-          {/* jianming will do */}
-          <Link to="#">
-            <button className="border border-gray-600 hover:border-gray-400 px-8 py-3 rounded-lg">
-              Upload
-            </button>
-          </Link>
+        
         </div>
       </div>
       <div className="flex-1 flex justify-center">
