@@ -49,7 +49,7 @@ const ListingPopup = (props: ListingProps) => {
       duration: listingType === 'auction' ? duration : null
     };
     console.log('Listing data:', listingData);
-    console.log(selectedNFT,price)
+    console.log(selectedNFT, price)
     // Reset form and close popup
     setselectedNFT('');
     setPrice(0);
@@ -81,8 +81,7 @@ const ListingPopup = (props: ListingProps) => {
               showEffects: true,
             },
           });
-          // TODO: hard refresh page
-          // retrieveAuctionHouse()
+          window.location.reload();
         }
       }
     )
@@ -108,8 +107,7 @@ const ListingPopup = (props: ListingProps) => {
               showEffects: true,
             },
           });
-          //Refresh on Finish
-          // retrieveMarketplace()
+          window.location.reload();
         }
       }
     )
@@ -152,8 +150,8 @@ const ListingPopup = (props: ListingProps) => {
 
                 {props.userNFTs.map((nft: any) => (
                   <div
-                    key={nft.id}
-                    className={`bg-gray-800 rounded-lg overflow-hidden cursor-pointer transition-all ${nft.id == selectedNFT
+                    key={nft.id.id}
+                    className={`bg-gray-800 rounded-lg overflow-hidden cursor-pointer transition-all ${nft.id.id == selectedNFT
                       ? 'border border-orange-500 rounded-md bg-gray-700'
                       : 'hover:bg-gray-700'
                       }`}
@@ -170,7 +168,7 @@ const ListingPopup = (props: ListingProps) => {
                     <div className="p-3">
                       <h4 className="font-medium text-white text-sm mb-1">{nft.name}</h4>
                       <p className="text-gray-400 text-xs">{nft.collection}</p>
-                      {(selectedNFT === nft.id) && (
+                      {(selectedNFT === nft.id.id) && (
                         <div className="mt-2">
                           <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full">
                             Selected ✓
@@ -270,8 +268,9 @@ const ListingPopup = (props: ListingProps) => {
               Cancel
             </button>
             <button
-              onClick={listingType === "fixed" ? () => { 
-                createListing(selectedNFT, price) } : () => { startAuction(price, parseInt(duration), selectedNFT) }}
+              onClick={listingType === "fixed" ? () => {
+                createListing(selectedNFT, price)
+              } : () => { startAuction(price, parseInt(duration), selectedNFT) }}
               disabled={!selectedNFT}
               className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:bg-gray-600 disabled:cursor-not-allowed"
             >
