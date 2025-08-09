@@ -5,6 +5,9 @@ import { Transaction } from '@mysten/sui/transactions';
 import { useNetworkVariable } from '../networkConfig';
 import { Button } from '@radix-ui/themes';
 import Navbar from '../components/Navbar';
+import NFTCard from '../components/NFTCard';
+import { Link } from 'react-router-dom';
+import Footer from '../components/Footer';
 
 const Marketplace = () => {
   const userAccount = useCurrentAccount();
@@ -173,29 +176,86 @@ const Marketplace = () => {
     return userAssets
   }
 
+  //Frontend Hooks
+  const [visibleItems, setVisibleItems] = useState(12);
+  const displayedNFTs = marketplaceItems.slice(0, visibleItems);
+  const loadMore = () => {
+    setVisibleItems(prev => prev + 8);
+  };
+
+  //components
+    const ExploreHeader = () => (
+      <div className="text-center py-16 px-4">
+        <p className="text-orange-500 text-sm font-medium mb-2">Explore</p>
+        <h1 className="text-4xl md:text-5xl font-bold mb-6">Welcome To Explore</h1>
+        <div className="flex items-center justify-center space-x-2 text-sm">
+          <Link to="/" className="text-gray-400 hover:text-white">Home</Link>
+          <span className="text-gray-600">→</span>
+          <span className="text-orange-500">Explore</span>
+        </div>
+      </div>
+    );
+  
+    const ResultsCount = ({ count }:{count: number}) => (
+      <div className="mb-6">
+        <p className="text-gray-400 text-sm">{count.toLocaleString()} results found</p>
+      </div>
+    );
+  
+    //max 4 cards per row using grid layout (maybe can change to flex also?)
+    const NFTGrid = ({ displayedNFTs }:{displayedNFTs:any}) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
+        {displayedNFTs.map((item:any) => (
+          <div key={item.UID} className="w-full">
+            <NFTCard item={item} />
+          </div>
+        ))}
+      </div>
+    );
+  
+    const LoadMoreButton = ({ onClick }:{onClick:any}) => (
+      <div className="text-center mb-16">
+        <button
+          onClick={onClick}
+          className="border border-gray-600 hover:border-orange-500 hover:text-orange-500 px-8 py-3 rounded-lg font-medium transition-colors"
+        >
+          Load More
+        </button>
+      </div>
+    );
+  
+  
+    const NoResults = () => (
+      <div className="text-center py-16">
+        <div className="text-6xl mb-4">🔍</div>
+        <h3 className="text-xl font-bold mb-2">No NFTs</h3>
+      </div>
+    );
+
   return (
-    <>
-    <Button
-      onClick={()=>{
-        buyListing("0x5d54cdbc06714919e4a258c3f1ac1df8e6b2249add2a9042df8d405f640804f0")
-      }}>
-      Buy Listing
-    </Button>
-    <Button
-      onClick={()=>{
-        deleteListing("0x59610e1d5fd3650670ef67fbe6d876de803c2c9b2c8d8612f49612e02ba4270a")
-      }}>
-      Delete Listing
-    </Button>
-    <Button
-      onClick={()=>{createListing("0x90d62e771b6e49e5b970fe03333e51895829a8fd596f50dac4b7250805237e1b",0.01)}}>
-      Add Listing
-    </Button>
-    {marketplaceItems.map((item)=>(
-      <h1>{item.id.id}</h1>
-    ))}
-    </>
-  )
+      <div className="bg-black text-white min-h-screen">
+        <ExploreHeader />
+    
+        <div className="max-w-7xl mx-auto px-4 lg:px-6">
+    
+          <ResultsCount count={marketplaceItems.length} />
+    
+          {marketplaceItems.length > 0 ? (
+            <>
+              <NFTGrid displayedNFTs={displayedNFTs} />
+  
+              {displayedNFTs.length < marketplaceItems.length && (
+                <LoadMoreButton onClick={loadMore} />
+              )}
+            </>
+          ) : (
+            <NoResults/>
+          )}
+        </div>
+    
+        <Footer />
+      </div>
+    );
 }
 
 export default Marketplace

@@ -14,7 +14,7 @@ const App = () => {
         <Route index element={<Landing/>}/>
         <Route path="/marketplace" element={<Marketplace/>}/>
         <Route path="/minting" element={<Minting/>}/>
-        <Route path="/auction" element={<Auction/>}/>
+        <Route path="/auctions" element={<Auction/>}/>
         <Route path="/my-collections" element={<Collection/>}/>
         <Route path="*" element={<h1 className="text-white text-center text-6xl">Oops. Seems Like There's No Content Here.</h1>}/>
       </Route>
