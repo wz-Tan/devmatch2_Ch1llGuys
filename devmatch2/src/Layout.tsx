@@ -1,9 +1,9 @@
 import { ConnectButton, useCurrentAccount, useSuiClient } from "@mysten/dapp-kit"
 import {Outlet} from "react-router-dom"
 import Navbar from "./components/Navbar"
+import ListingPopup from "./components/ListingPopup"
 import "./index.css"
 import { useEffect, useState } from "react"
-import ListingPopup from "./components/ListingPopup"
 import { NFT_TYPE } from "./constants"
 
 const Layout = () => {

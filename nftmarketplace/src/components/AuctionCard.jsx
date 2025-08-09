@@ -93,7 +93,7 @@ function AuctionCard({ item }) {
                 {/* Place Bid Button - Always at bottom */}
                 <div className="flex justify-center">
                     {/* TODO: link to nftdetails? according to our discussion */}
-                    <Link to={"/auctiondetails"} state={{ nft: item }}>
+                    <Link to={"/auctiondetails"} state={{ auction: item }}>
                         <button className="border border-gray-500 group-hover:border-orange-500 relative z-10 text-orange-500 group-hover:bg-orange-500 group-hover:text-white py-2 px-4 rounded-md font-medium transition-all duration-300 text-sm group-hover:translate-y-8 transition duration-300"
                             onClick={console.log(item)}>
                             Learn More →
