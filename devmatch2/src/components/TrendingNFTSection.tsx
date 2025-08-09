@@ -1,6 +1,8 @@
 import React from "react";
 import NFTCard from "./ListingNFTCard";
 import { Link } from "react-router-dom";
+import ListingNFTCard from "./ListingNFTCard";
+import PlaceholderNFTCard from "./PlaceholderNFTCard";
 
 // Type for a single NFT
 export interface NFTItem {
@@ -85,7 +87,7 @@ function TrendingNFTSection() {
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {trendingNFTs.map((item, index) => (
-          <NFTCard item={item} key={index} />
+          <PlaceholderNFTCard item={item} key={index} />
         ))}
       </div>
 

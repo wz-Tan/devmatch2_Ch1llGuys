@@ -59,7 +59,7 @@ const ListingPopup = (props: ListingProps) => {
         <div className="flex items-center justify-between p-6 border-b border-gray-700">
           <h2 className="text-2xl font-bold text-white">List Your NFTs</h2>
           <button 
-            onClick={onClose}
+            onClick={props.onClose}
 
             className="text-gray-400 hover:text-white text-2xl"
           >

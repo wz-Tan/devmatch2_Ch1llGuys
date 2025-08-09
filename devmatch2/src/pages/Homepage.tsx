@@ -12,8 +12,8 @@ const Homepage = () => {
     <>
           <HeroSection />
           <TrendingNFTSection />
-          <TrendingAuctions />
-          <StepSection />
+           {/* <TrendingAuctions /> */}
+          {/*<StepSection /> */}
           <CreatorSection/>
           <CollectionSection />
           <Footer />

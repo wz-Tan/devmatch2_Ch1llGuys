@@ -61,6 +61,7 @@ const Layout = () => {
       <Navbar onListNFTClick={handleListNFTClick}/>
       <Outlet/>
       <ListingPopup
+          
           isOpen={showListingPopup}
           onClose={() => setShowListingPopup(false)}
           userNFTs={ownedNFTs}
