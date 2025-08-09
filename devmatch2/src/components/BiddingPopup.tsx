@@ -21,7 +21,7 @@ const BiddingPopup: React.FC<BiddingPopupProps> = ({ isOpen, onClose, auction })
         const tx = new Transaction();
 
         bidding = Math.floor(bidding * 1e9);
-        console.log(auction_id,bidding)
+        console.log(auction_id, bidding)
 
         let biddingCoin = tx.splitCoins(tx.gas, [tx.pure.u64(bidding)])
 
@@ -39,8 +39,8 @@ const BiddingPopup: React.FC<BiddingPopupProps> = ({ isOpen, onClose, auction })
                             showEffects: true,
                         },
                     });
-                    //Refresh on Finish
-
+                    //Refresh on Finish (untested)
+                    window.location.reload();
                 }
             }
         )
@@ -102,7 +102,7 @@ const BiddingPopup: React.FC<BiddingPopupProps> = ({ isOpen, onClose, auction })
                     />
                     <div className='flex justify-center pt-5 mt-4'>
                         <button
-                            onClick={() => createBidding(auction.id.id, price)} 
+                            onClick={() => createBidding(auction.id.id, price)}
                             className='bg-orange-500 p-2 rounded-sm text-sm cursor-pointer hover:bg-orange-600 transition-colors'
                         >
                             Place Bid

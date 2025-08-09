@@ -84,7 +84,7 @@ const ListingPopup = (props: ListingProps) => {
               showEffects: true,
             },
           });
-          // refresh (untested)
+          // refresh (settled)
           window.location.reload();
           navigate('/auctions');
         }
