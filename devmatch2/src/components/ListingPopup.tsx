@@ -40,7 +40,7 @@ const ListingPopup = (props: ListingProps) => {
       alert('Please select at one NFT');
       return;
     }
-    if (!price) {
+    if (price===0) {
       alert('Please enter a price');
       return;
     }
