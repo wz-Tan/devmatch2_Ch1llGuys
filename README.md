@@ -2,7 +2,7 @@
 
 ## 🏆 Overview
 
-**QuestismOS** is a **gamified NFT marketplace** built on **Sui** that allows NFTs to **level up or rank up** when completing certain quests or tasks.  
+**SuiRankup** is a **gamified NFT marketplace** built on **Sui** that allows NFTs to **level up or rank up** when completing certain quests or tasks.  
 Our mission is to create a **better bridge from Web2 to Web3**, making blockchain accessible, rewarding, and fun.
 
 Players and collectors can **buy, sell, auction, and interact** with NFTs that evolve dynamically over time — creating a sense of progression like in gaming.  
@@ -148,3 +148,4 @@ Slides & Pitch Deck: Yao Ren , Ang Jianming
 ## 📄 License
 
 Apache License – See LICENSE for details.
+
