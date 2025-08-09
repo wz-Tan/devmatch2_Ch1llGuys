@@ -11,40 +11,11 @@ function Footer() {
                         <Link to="/" className="block hover:text-white transition-colors">
                             <div>Home</div>
                         </Link>
-                        <Link to="/" className="block hover:text-white transition-colors">
-                            <div>Activity</div>
+                        <Link to="/marketplace" className="block hover:text-white transition-colors">
+                            <div>Marketplace</div>
                         </Link>
-                        <Link to="/" className="block hover:text-white transition-colors">
-                            <div>Explore</div>
-                        </Link>
-                        <Link to="/" className="block hover:text-white transition-colors">
-                            <div>About</div>
-                        </Link>
-                        <Link to="/" className="block hover:text-white transition-colors">
-                            <div>Contact</div>
-                        </Link>
-                    </div>
-                </div>
-
-                {/* Categories */}
-                <div>
-                    <h4 className="font-bold mb-4">Categories</h4>
-                    {/* figure out some kinda method to filter */}
-                    <div className="space-y-2 text-gray-400">
-                        <Link to="/" className="block hover:text-white transition-colors">
-                            <div>Art</div>
-                        </Link>
-                        <Link to="/" className="block hover:text-white transition-colors">
-                            <div>Gaming</div>
-                        </Link>
-                        <Link to="/" className="block hover:text-white transition-colors">
-                            <div>Music</div>
-                        </Link>
-                        <Link to="/" className="block hover:text-white transition-colors">
-                            <div>Domain Names</div>
-                        </Link>
-                        <Link to="/" className="block hover:text-white transition-colors">
-                            <div>Photography</div>
+                        <Link to="/auctions" className="block hover:text-white transition-colors">
+                            <div>Auction</div>
                         </Link>
                     </div>
                 </div>

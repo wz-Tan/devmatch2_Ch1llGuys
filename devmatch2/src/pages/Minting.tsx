@@ -1,47 +1,69 @@
+import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from '@mysten/dapp-kit'
 import React, { useEffect, useState } from 'react'
-// import { WalletAccount } from '@wallet-standard/base';
-// import { SuiClient } from '@mysten/sui/client';
-import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from '@mysten/dapp-kit';
-import { Transaction } from '@mysten/sui/transactions';
 import { useNetworkVariable } from '../networkConfig';
-import { Button, Container, Heading, TextField, Text } from '@radix-ui/themes'
+import { Transaction } from '@mysten/sui/transactions';
+import { AUCTIONHOUSE_ID, CLOCK_ID, NFT_TYPE } from '../constants';
+import AuctionCard from '../components/AuctionCard';
 import Footer from '../components/Footer';
-import '../index.css';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-
-const Minting = () => {
-    let navigate = useNavigate();
-
-    let userAccount = useCurrentAccount();
-    const packageID = useNetworkVariable("PackageId");
+const Auction = () => {
+    const userAccount = useCurrentAccount();
     const suiClient = useSuiClient();
+    const packageID = useNetworkVariable("PackageId");
 
-    const [mintEnabled, changeMintEnabled] = useState(false);
+    const { mutate: signAndExecute } = useSignAndExecuteTransaction();
+    const [auctions, setAuctions] = useState<any[]>([]);
 
-    const {
-        mutate: signAndExecute,
-        isSuccess,
-        isPending
-    } = useSignAndExecuteTransaction();
+    useEffect(() => { retrieveAuctionHouse() }, [])
 
-    async function mintNFT(seed: number, name: string, description: string, mediaURL: string) {
-        if (!mintEnabled) {
-            return;
-        }
-        // if (!(name || description || mediaURL)) {
-        //     return;
-        // }
 
-        const tx = new Transaction();
-
-        tx.moveCall({
-            arguments: [tx.pure.u64(seed), tx.pure.string(name), tx.pure.string(description), tx.pure.string(mediaURL)],
-            target: `${packageID}::nft::mint_NFT`
+    async function retrieveAuctionHouse() {
+        let auctionHouse = await suiClient.getObject({
+            id: AUCTIONHOUSE_ID,
+            options: {
+                showContent: true,
+                showType: true
+            }
         });
 
+        //Get Auction Bag ID
+        let auctionBagId;
+        if (auctionHouse.data?.content?.dataType === "moveObject") {
+            auctionBagId = (auctionHouse as any).data.content.fields.auctionBag.fields.id.id
+        }
 
-        //Continue Here
+        //Get Auction Bag Fields
+        let auctionBagFields;
+        auctionBagFields = await suiClient.getDynamicFields({ parentId: auctionBagId });
+        auctionBagFields = auctionBagFields.data;
+
+        let actualListings: any[] = [];
+        await Promise.all(auctionBagFields.map(async (auctionField) => {
+            let listing = await suiClient.getObject({
+                id: auctionField.objectId,
+                options: {
+                    showContent: true
+                }
+            })
+            actualListings.push((listing as any).data.content.fields)
+        }))
+
+        setAuctions(actualListings);
+    }
+
+    async function createBidding(auction_id: string, bidding: number) {
+        const tx = new Transaction();
+
+        bidding = Math.floor(bidding * 1e9);
+
+        let biddingCoin = tx.splitCoins(tx.gas, [tx.pure.u64(bidding)])
+
+        tx.moveCall({
+            arguments: [tx.object(AUCTIONHOUSE_ID), tx.pure.id(auction_id), tx.object(biddingCoin), tx.object(CLOCK_ID)],
+            target: `${packageID}::bidding::createBidding`
+        })
+
         signAndExecute({ transaction: tx },
             {
                 onSuccess: async ({ digest }) => {
@@ -51,147 +73,100 @@ const Minting = () => {
                             showEffects: true,
                         },
                     });
-
-
-                    let digestInfo = await suiClient.getTransactionBlock({
-                        digest: digest,
-                        options: {
-                            showBalanceChanges: true,
-                            showEffects: true,
-                            showEvents: true,
-                            showInput: true,
-                            showObjectChanges: true
-                        }
-                    });
-
-                    navigate('/my-collections');
+                    //Refresh on Finish
+                    retrieveAuctionHouse()
                 }
             }
         )
     }
 
+    //Frontend Hooks
+    const [visibleItems, setVisibleItems] = useState(12);
 
-    function getSeed(): number {
-        return Math.floor(Math.random() * 100000);
-    }
+    const displayedAuctions = auctions.slice(0, visibleItems);
 
-
-    const [imageURL, setImageURL] = useState("")
-    const [imageName, setImageName] = useState("")
-    const [imageDescription, setImageDescription] = useState("")
-    const [isValidURL, setIsValidURL] = useState(true);
-
-    // Simple URL validation
-    function validateURL(url: string): boolean {
-        if (!url.trim()) return true; // Empty is valid (optional)
-
-        try {
-            new URL(url);
-            return url.startsWith('http://') || url.startsWith('https://');
-        } catch {
-            return false;
-        }
-    }
-
-    const handleURLChange = (url: string) => {
-        setImageURL(url);
-        setIsValidURL(validateURL(url));
+    const loadMore = () => {
+        setVisibleItems(prev => prev + 8);
     };
 
-    useEffect(() => {
-        changeMintEnabled(!!(imageName && imageDescription && imageURL));
-    }, [imageName, imageDescription, imageURL]);
+    // Components
+    const AuctionHeader = () => (
+        <div className="text-center py-16 px-4">
+            <p className="text-orange-500 text-sm font-medium mb-2">Live Auctions</p>
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">NFT Auction House</h1>
+            <p className="text-gray-400 mb-6 max-w-2xl mx-auto">
+                Discover and bid on exclusive NFTs in our live auction marketplace
+            </p>
+            <div className="flex items-center justify-center space-x-2 text-sm">
+                <Link to="/" className="text-gray-400 hover:text-white">Home</Link>
+                <span className="text-gray-600">→</span>
+                <span className="text-orange-500">Auctions</span>
+            </div>
+        </div>
+    );
 
+
+    const ResultsCount = ({ count }: { count: number }) => (
+        <div className="mb-6">
+            <p className="text-gray-400 text-sm">{count.toLocaleString()} live auctions found</p>
+        </div>
+    );
+
+    const AuctionGrid = ({ displayedAuctions }: { displayedAuctions: any }) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
+            {displayedAuctions.map((auction: any, key: number) => (
+                <div key={key} className="w-full">
+                    <AuctionCard auction={auction} />
+                </div>
+            ))}
+        </div>
+    );
+
+    const LoadMoreButton = ({ onClick }: { onClick: any }) => (
+        <div className="text-center mb-16">
+            <button
+                onClick={onClick}
+                className="border border-gray-600 hover:border-orange-500 hover:text-orange-500 px-8 py-3 rounded-lg font-medium transition-colors"
+            >
+                Load More Auctions
+            </button>
+        </div>
+    );
+
+
+    const NoResults = () => (
+        <div className="text-center py-16">
+            <div className="text-6xl mb-4">⏰</div>
+            <h3 className="text-xl font-bold mb-2">No Live Auctions Found</h3>
+        </div>
+    );
 
     return (
-        <div className="flex flex-col items-center justify-center bg-gradient-to-b from-black-900 to-gray-800 text-white min-w-full py-8 px-10">
-            <div className="flex flex-col space-y-6 w-200">
-                <span
-                    className="text-4xl font-bold text-transparent bg-clip-text bg-orange-500 flex justify-center"
-                >
-                    Mint Your NFT
-                </span>
-                <br />
+        <div className="bg-gradient-to-b from-black-900 to-gray-850 text-white min-h-screen">
+            <AuctionHeader />
 
+            <div className="max-w-7xl mx-auto px-4 lg:px-6">
 
-                <div className="space-y-6 bg-black-800/60 p-8 rounded-xl shadow-lg border border-gray-700 backdrop-blur-sm">
-                    <input
-                        type="text"
-                        placeholder="Enter NFT name"
-                        value={imageName}
-                        onChange={(e) => setImageName(e.target.value)}
-                        className="w-full px-4 py-3 bg-gray-700/60 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder-gray-400"
-                    />
+                <ResultsCount count={auctions.length} />
 
-                    <textarea
-                        placeholder="Enter NFT description"
-                        value={imageDescription}
-                        onChange={(e) => setImageDescription(e.target.value)}
-                        rows={3}
-                        className="w-full px-4 py-3 bg-gray-700/60 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder-gray-400 resize-none"
-                    />
+                {auctions.length > 0 ? (
+                    <>
+                        <AuctionGrid displayedAuctions={displayedAuctions} />
 
-                    <input
-                        type="url"
-                        placeholder="Enter NFT Media URL"
-                        value={imageURL}
-                        onChange={(e) => handleURLChange(e.target.value)}
-                        className="w-full px-4 py-3 bg-gray-700/60 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder-gray-400"
-                    />
-
-
-                    <Text className="flex flex-col items-center justify-center text-lg font-medium text-orange-500">Preview</Text>
-                    <div className='flex justify-center mt-5'>
-                        <div className="w-72 h-72 rounded-xl overflow-hidden border border-gray-700 bg-gray-800/60 shadow-md backdrop-blur-sm flex justify-center item-center">
-                            {imageURL.trim() && isValidURL ? (
-                                <img
-                                    src={imageURL}
-                                    alt={imageName || 'NFT Preview'}
-                                    className="w-full h-full object-cover rounded-xl"
-                                />
-                            ) : (
-                                <div className={`flex items-center justify-center text-gray-400 ${imageURL.trim() && isValidURL ? 'hidden' : ''}`}>
-                                    {!isValidURL && imageURL.trim() ? 'Invalid URL' : 'No image provided'}
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                </div>
-
-                <br />
-
-                <button
-                    onClick={() => mintNFT(getSeed(), imageName, imageDescription, imageURL)}
-                    disabled={isPending || (!mintEnabled)}
-                    className={`
-                        w-full py-3 px-4 rounded-lg font-medium 
-                        bg-orange-500 hover:bg-orange-600 transition duration-300
-                        disabled:opacity-50 disabled:cursor-not-allowed
-                        focus:ring-2 focus:ring-cyan-500 focus:ring-opacity-50
-                        text-xl font-bold cursor-pointer
-                    `}
-                >
-                    {isPending ? (
-                        <span className="flex items-center justify-center">
-                            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            Minting...
-                        </span>
-                    ) : (
-                        'Mint NFT'
-                    )}
-                </button>
+                        {displayedAuctions.length < auctions.length && (
+                            <LoadMoreButton onClick={loadMore} />
+                        )}
+                    </>
+                ) : (
+                    <NoResults />
+                )}
             </div>
-            <br />
-            <div className="flex index-start">
-                <Footer />
-            </div>
+
+            <Footer />
         </div>
 
     )
 }
 
-export default Minting
+
+export default Auction;
