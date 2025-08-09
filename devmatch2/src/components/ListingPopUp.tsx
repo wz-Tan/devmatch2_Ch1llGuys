@@ -6,6 +6,7 @@ import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from '@
 import { useState } from 'react';
 import { AUCTIONHOUSE_ID, CLOCK_ID, MARKETPLACE_ID } from '../constants';
 import { useNetworkVariable } from '../networkConfig';
+import { useNavigate } from 'react-router-dom';
 
 type ListingProps = {
   isOpen: boolean,
@@ -14,6 +15,8 @@ type ListingProps = {
 };
 
 const ListingPopup = (props: ListingProps) => {
+  const navigate = useNavigate();
+
   const suiClient = useSuiClient();
   const packageID = useNetworkVariable("PackageId");
   const { mutate: signAndExecute } = useSignAndExecuteTransaction();
@@ -81,7 +84,9 @@ const ListingPopup = (props: ListingProps) => {
               showEffects: true,
             },
           });
+          // refresh (settled)
           window.location.reload();
+          navigate('/auctions');
         }
       }
     )
@@ -107,7 +112,8 @@ const ListingPopup = (props: ListingProps) => {
               showEffects: true,
             },
           });
-          window.location.reload();
+          // refresh (settled)
+          navigate('/marketplace');
         }
       }
     )

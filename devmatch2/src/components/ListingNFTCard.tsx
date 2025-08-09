@@ -18,9 +18,9 @@ const rarityTextColors = {
   mythic: "text-pink-500"
 };
 
-function ListingNFTCard({ item }:{item:any}) {
-  let nft=item.nft.fields;
-  let rarity=nft.rarity.variant;
+function ListingNFTCard({ item }: { item: any }) {
+  let nft = item.nft.fields;
+  let rarity = nft.rarity.variant;
   const borderColor = rarityBorderColors[rarity as keyof typeof rarityBorderColors] || "border-white";
   const textColor = rarityTextColors[rarity as keyof typeof rarityTextColors] || "text-white";
 
@@ -28,7 +28,7 @@ function ListingNFTCard({ item }:{item:any}) {
     <div className={`bg-[rgb(15,15,15)] rounded-xl hover:bg-[rgb(20,20,20)] transition-colors p-4 border ${borderColor} group h-full flex flex-col`}>
       {/* Image Container*/}
       <div className="aspect-square bg-gradient-to-br from-orange-400 to-red-600 flex items-center justify-center text-6xl rounded-lg mb-4">
-        <img src={nft.mediaURL} className="w-full h-full object-cover"/>
+        <img src={nft.mediaURL} className="w-full h-64 object-cover" />
       </div>
 
       {/* Content */}
@@ -56,7 +56,7 @@ function ListingNFTCard({ item }:{item:any}) {
           <div className="flex flex-col min-w-0 flex-1 items-end">
             <p className="text-gray-400 text-xs uppercase tracking-wide">Price</p>
             <p className="text-white font-bold text-sm truncate" title={nft.price}>
-              {item.price/1e9} SUI
+              {item.price / 1e9} SUI
             </p>
           </div>
         </div>

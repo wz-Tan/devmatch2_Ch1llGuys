@@ -57,7 +57,7 @@ const Layout = () => {
   };
 
   return (
-    <div className="className=bg-black text-white min-h-screen">
+    <div className="bg-gradient-to-b from-black-900 to-gray-850 text-white min-h-screen">
       <Navbar onListNFTClick={handleListNFTClick}/>
       <Outlet/>
       <ListingPopup
