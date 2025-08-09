@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 import { useNetworkVariable } from '../networkConfig';
 import { Transaction } from '@mysten/sui/transactions';
 import { AUCTIONHOUSE_ID, CLOCK_ID, NFT_TYPE } from '../constants';
-import { Button } from '@radix-ui/themes';
 import AuctionCard from '../components/AuctionCard';
 import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
@@ -51,36 +50,6 @@ const Auction = () => {
     }))
 
     setAuctions(actualListings);
-    console.log("Retrieved Auctions",actualListings)
-  }
-
-  async function startAuction(minPrice:number, duration:number, nft:string){
-    const tx= new Transaction();
-
-    //Convert to SUI and Days
-    minPrice=Math.floor(minPrice*1e9);
-    duration=duration*86400000;
-
-    let deposit=tx.splitCoins(tx.gas,[tx.pure.u64(100000000)]);
-
-    tx.moveCall({
-      arguments:[tx.object(AUCTIONHOUSE_ID), tx.object(deposit), tx.pure.u64(minPrice), tx.pure.u64(duration), tx.object(nft), tx.object(CLOCK_ID)],
-      target: `${packageID}::bidding::startAuction`
-    })
-
-    signAndExecute({ transaction: tx },
-            {
-                onSuccess: async ({ digest }) => {
-                    await suiClient.waitForTransaction({
-                        digest: digest,
-                        options: {
-                            showEffects: true,
-                        },
-                    });
-                    retrieveAuctionHouse()
-                }
-            }
-        )
   }
 
   async function createBidding(auction_id:string, bidding:number){
@@ -110,37 +79,6 @@ const Auction = () => {
       }
     )
   }
-
-  async function retrieveCollection(): Promise<object[] | null> {
-      if (!userAccount) return null
-  
-      let userAssets: object[] = []
-      let res = await suiClient.getOwnedObjects({
-        owner: userAccount?.address,
-        options: {
-          showType: true
-        }
-      })
-  
-      let allAssets = res.data;
-  
-      //Filter The Correct NFT Type, Then Fit The Object Into Array
-      await Promise.all((allAssets.map(async (asset) => {
-        if (asset.data?.type === NFT_TYPE) {
-          let nft = await suiClient.getObject({
-            id: asset.data.objectId,
-            options: {
-              showContent: true
-            }
-          })
-          if (nft.data?.content?.dataType === "moveObject") userAssets.push(nft.data.content.fields)
-  
-        }
-      }))
-      )
-  
-      return userAssets
-    }
 
     //Frontend Hooks
   const [visibleItems, setVisibleItems] = useState(12);

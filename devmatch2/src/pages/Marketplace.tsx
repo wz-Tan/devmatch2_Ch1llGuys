@@ -17,8 +17,9 @@ const Marketplace = () => {
 
   const navigate = useNavigate();
 
-  const [marketplaceItems, setMarketplaceItems] = useState<any[]>([])
   const { mutate: signAndExecute } = useSignAndExecuteTransaction();
+  const [marketplaceItems, setMarketplaceItems] = useState<any[]>([])
+
 
   useEffect(() => { retrieveMarketplace() }, [])
 

@@ -246,16 +246,17 @@ const MarketplaceNFTDetails = () => {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-4">
-              <button
-                className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-4 px-6 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl"
-                onClick={() => { buyListing(listing.id.id) }}
-              >
-                Purchase NFT
-              </button>
+            <div className="flex gap-4 mb-[5px]">
+              {(userAccount?.address != listing.owner) ?
+                <button
+                  className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-4 px-6 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+                  onClick={() => { buyListing(listing.id.id) }}
+                >
+                  Purchase NFT
+                </button> : null}
             </div>
 
-            <div className="flex mt-[-10px]">
+            <div className="flex">
               {(userAccount?.address === listing.owner) ?
                 <button
                   className="flex-1 bg-gradient-to-r from-orange-800 to-orange-800 text-white py-4 px-6 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl"

@@ -79,6 +79,24 @@ const Minting = () => {
     const [imageURL, setImageURL] = useState("")
     const [imageName, setImageName] = useState("")
     const [imageDescription, setImageDescription] = useState("")
+    const [isValidURL, setIsValidURL] = useState(true);
+
+    // Simple URL validation
+    function validateURL(url: string): boolean {
+        if (!url.trim()) return true; // Empty is valid (optional)
+
+        try {
+            new URL(url);
+            return url.startsWith('http://') || url.startsWith('https://');
+        } catch {
+            return false;
+        }
+    }
+
+    const handleURLChange = (url: string) => {
+        setImageURL(url);
+        setIsValidURL(validateURL(url));
+    };
 
     useEffect(() => {
         changeMintEnabled(!!(imageName && imageDescription && imageURL));
@@ -97,35 +115,45 @@ const Minting = () => {
 
 
                 <div className="space-y-6 bg-black-800/60 p-8 rounded-xl shadow-lg border border-gray-700 backdrop-blur-sm">
-                    <TextField.Root
+                    <input
+                        type="text"
                         placeholder="Enter NFT name"
+                        value={imageName}
                         onChange={(e) => setImageName(e.target.value)}
                         className="w-full px-4 py-3 bg-gray-700/60 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder-gray-400"
                     />
 
-
-                    <TextField.Root
+                    <textarea
                         placeholder="Enter NFT description"
+                        value={imageDescription}
                         onChange={(e) => setImageDescription(e.target.value)}
-                        className="w-full px-4 py-3 bg-gray-700/60 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder-gray-400"
+                        rows={3}
+                        className="w-full px-4 py-3 bg-gray-700/60 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder-gray-400 resize-none"
                     />
 
-
-                    <TextField.Root
+                    <input
+                        type="url"
                         placeholder="Enter NFT Media URL"
-                        onChange={(e) => setImageURL(e.target.value)}
+                        value={imageURL}
+                        onChange={(e) => handleURLChange(e.target.value)}
                         className="w-full px-4 py-3 bg-gray-700/60 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder-gray-400"
                     />
 
 
                     <Text className="flex flex-col items-center justify-center text-lg font-medium text-orange-500">Preview</Text>
                     <div className='flex justify-center mt-5'>
-                        <div className="w-72 h-72 rounded-xl overflow-hidden border border-gray-700 bg-gray-800/60 shadow-md backdrop-blur-sm">
-                            <img
-                                src={imageURL}
-                                alt={imageName}
-                                className="flex flex-col items-center justify-center w-full h-full object-cover"
-                            />
+                        <div className="w-72 h-72 rounded-xl overflow-hidden border border-gray-700 bg-gray-800/60 shadow-md backdrop-blur-sm flex justify-center item-center">
+                            {imageURL.trim() && isValidURL ? (
+                                <img
+                                    src={imageURL}
+                                    alt={imageName || 'NFT Preview'}
+                                    className="w-full h-full object-cover rounded-xl"
+                                />
+                            ) : (
+                                <div className={`flex items-center justify-center text-gray-400 ${imageURL.trim() && isValidURL ? 'hidden' : ''}`}>
+                                    {!isValidURL && imageURL.trim() ? 'Invalid URL' : 'No image provided'}
+                                </div>
+                            )}
                         </div>
                     </div>
 
