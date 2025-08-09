@@ -25,3 +25,5 @@ frontend/node_modules/
 *.log
 
 front-end/node_modules/
+
+devmatch2/.vite/
