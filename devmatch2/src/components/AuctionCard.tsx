@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import useCountdown from "../hooks/useCountdown";
 import { useCurrentAccount, useSuiClient } from "@mysten/dapp-kit";
 import { useNetworkVariable } from "../networkConfig";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const rarityBorderColors = {
     'common': "border-black hover:border-gray-400",
@@ -31,14 +31,15 @@ const AuctionCard = ({auction}:{auction:any}) => {
   const nft=auction.nft.fields;
   //Get Highest Bid
   let highestBidID=auction.highestBidID;
-  let highestBid:any;
+  const [highestBid,setHighestBid]=useState<any>(null);
 
   const getHighestBid=async ()=>{
     try{
-      highestBid=await suiClient.getObject({id:highestBidID,options:{showContent:true,showDisplay:true}});
+      let bid=await suiClient.getObject({id:highestBidID,options:{showContent:true,showDisplay:true}});
+      setHighestBid((bid as any).data.content.fields);
     }
     catch(err){
-      highestBid=null
+      setHighestBid(null)
     }
   }
 
@@ -93,7 +94,7 @@ const AuctionCard = ({auction}:{auction:any}) => {
                     {(highestBid) ? (
                         <div className="flex justify-between text-xs">
                             <span className="text-gray-400">Current Bid:</span>
-                            <span className="text-white font-semibold">{highestBid.amount}</span>
+                            <span className="text-white font-semibold">{highestBid.amount/1e9} SUI</span>
                         </div>
                     ) : (
                         <div className="flex justify-between text-xs">
