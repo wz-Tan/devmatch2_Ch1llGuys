@@ -1,6 +1,11 @@
 // src/components/ListingPopup.jsx
 
+import { Transaction } from '@mysten/sui/transactions';
+import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from '@mysten/dapp-kit'
+
 import { useState } from 'react';
+import { AUCTIONHOUSE_ID, CLOCK_ID, MARKETPLACE_ID } from '../constants';
+import { useNetworkVariable } from '../networkConfig';
 
 type ListingProps = {
   isOpen: boolean,
@@ -9,6 +14,10 @@ type ListingProps = {
 };
 
 const ListingPopup = (props: ListingProps) => {
+  const suiClient = useSuiClient();
+  const packageID = useNetworkVariable("PackageId");
+  const { mutate: signAndExecute } = useSignAndExecuteTransaction();
+
   const [selectedNFTs, setSelectedNFTs] = useState<string[]>([]);
   const [listingType, setListingType] = useState('fixed');
   const [price, setPrice] = useState(0);
@@ -50,6 +59,63 @@ const ListingPopup = (props: ListingProps) => {
     props.onClose();
   };
 
+  async function startAuction(minPrice: number, duration: number, nft: string) {
+    const tx = new Transaction();
+
+    //Convert to SUI and Days
+    minPrice = Math.floor(minPrice * 1e9);
+    duration = duration * 86400000;
+
+    let deposit = tx.splitCoins(tx.gas, [tx.pure.u64(100000000)]);
+
+    tx.moveCall({
+      arguments: [tx.object(AUCTIONHOUSE_ID), tx.object(deposit), tx.pure.u64(minPrice), tx.pure.u64(duration), tx.object(nft), tx.object(CLOCK_ID)],
+      target: `${packageID}::bidding::startAuction`
+    })
+
+    signAndExecute({ transaction: tx },
+      {
+        onSuccess: async ({ digest }) => {
+          await suiClient.waitForTransaction({
+            digest: digest,
+            options: {
+              showEffects: true,
+            },
+          });
+          // TODO: hard refresh page
+          // retrieveAuctionHouse()
+        }
+      }
+    )
+  }
+
+  async function createListing(nft: string, price: number) {
+    handleSubmitListing();
+
+    const tx = new Transaction();
+    price = Math.floor(price * 1e9);
+
+    tx.moveCall({
+      arguments: [tx.object(MARKETPLACE_ID), tx.object(nft), tx.pure.u64(price), tx.object(CLOCK_ID)],
+      target: `${packageID}::marketplace::createListing`
+    });
+
+    signAndExecute({ transaction: tx },
+      {
+        onSuccess: async ({ digest }) => {
+          await suiClient.waitForTransaction({
+            digest: digest,
+            options: {
+              showEffects: true,
+            },
+          });
+          //Refresh on Finish
+          // retrieveMarketplace()
+        }
+      }
+    )
+  }
+
   if (!props.isOpen) return null;
 
   return (
@@ -58,12 +124,12 @@ const ListingPopup = (props: ListingProps) => {
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-700">
           <h2 className="text-2xl font-bold text-white">List Your NFTs</h2>
-          <button 
+          <button
             onClick={props.onClose}
-
+          <button onClick={props.onClose}
             className="text-gray-400 hover:text-white text-2xl"
           >
-            ×
+
           </button>
         </div>
 
@@ -211,7 +277,7 @@ const ListingPopup = (props: ListingProps) => {
               Cancel
             </button>
             <button
-              onClick={handleSubmitListing}
+              onClick={listingType === "fixed" ? () => { createListing(selectedNFTs[0], price) } : () => { startAuction(price, parseInt(duration), selectedNFTs[0]) }}
               disabled={selectedNFTs.length === 0}
               className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:bg-gray-600 disabled:cursor-not-allowed"
             >
@@ -220,7 +286,7 @@ const ListingPopup = (props: ListingProps) => {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 
