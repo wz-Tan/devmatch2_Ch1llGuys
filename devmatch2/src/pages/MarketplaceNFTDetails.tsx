@@ -6,11 +6,10 @@ import { FaRegClock, FaRegUser } from "react-icons/fa6";
 import { CiUser } from "react-icons/ci";
 
 
-const NFTDetails = () => {
+const MarketplaceNFTDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const nft = location.state?.nft;
-  const purpose=location.state?.purpose;
+  const nft = location.state?.listingNFT;
   let rarity:string=nft.rarity.variant;
   let prevOwners:any[]=nft.prevOwners;
   
@@ -147,19 +146,23 @@ const NFTDetails = () => {
               </h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Current Owner</span>
-                  <span className="font-sm text-white">{nft.owner}</span>
+                  <div className="flex flex-col mb-[10px]">
+                  <h1 className="text-gray-400">Current Owner</h1>
+                  <h1 className="font-sm text-white">{nft.owner}</h1>
+                </div>
+                
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-400">Price</span>
-                  <span className="font-bold text-orange-500 text-lg">Price</span>
+                  <span className="font-bold text-orange-500 text-lg">{nft.price}</span>
                 </div>
+            
                 {prevOwners.length > 0 && (
-                  <div className="pt-2 border-t border-gray-700">
-                    <span className="text-sm text-gray-400">Previous Owners: </span>
-                    <span className="text-sm text-gray-300">
-                      {prevOwners.map(owner => `@${owner}`).join(', ')}
-                    </span>
+                  <div className="pt-2 border-t flex flex-col border-gray-700">
+                    <h1 className="text-sm text-gray-400">Previous Owners: </h1>
+                    <h1 className="text-sm text-gray-300">
+                      {prevOwners.map((owner)=>(<h1 className="font-sm text-white">{owner}</h1>))}
+                    </h1>
                   </div>
                 )}
               </div>
@@ -181,4 +184,4 @@ const NFTDetails = () => {
   );
 };
 
-export default NFTDetails;
+export default MarketplaceNFTDetails;
