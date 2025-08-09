@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 // import { WalletAccount } from '@wallet-standard/base';
 // import { SuiClient } from '@mysten/sui/client';
 import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from '@mysten/dapp-kit';
@@ -7,13 +7,17 @@ import { useNetworkVariable } from '../networkConfig';
 import { Button, Container, Heading, TextField, Text } from '@radix-ui/themes'
 import Footer from '../components/Footer';
 import '../index.css';
+import { useNavigate } from 'react-router-dom';
 
 
 const Minting = () => {
+    let navigate = useNavigate();
+
     let userAccount = useCurrentAccount();
     const packageID = useNetworkVariable("PackageId");
     const suiClient = useSuiClient();
 
+    const [mintEnabled, changeMintEnabled] = useState(false);
 
     const {
         mutate: signAndExecute,
@@ -21,10 +25,15 @@ const Minting = () => {
         isPending
     } = useSignAndExecuteTransaction();
 
-
     async function mintNFT(seed: number, name: string, description: string, mediaURL: string) {
-        const tx = new Transaction();
+        if (!mintEnabled) {
+            return;
+        }
+        // if (!(name || description || mediaURL)) {
+        //     return;
+        // }
 
+        const tx = new Transaction();
 
         tx.moveCall({
             arguments: [tx.pure.u64(seed), tx.pure.string(name), tx.pure.string(description), tx.pure.string(mediaURL)],
@@ -54,6 +63,8 @@ const Minting = () => {
                             showObjectChanges: true
                         }
                     });
+
+                    navigate('/my-collections');
                 }
             }
         )
@@ -69,16 +80,20 @@ const Minting = () => {
     const [imageName, setImageName] = useState("")
     const [imageDescription, setImageDescription] = useState("")
 
+    useEffect(() => {
+        changeMintEnabled(!!(imageName && imageDescription && imageURL));
+    }, [imageName, imageDescription, imageURL]);
+
 
     return (
         <div className="flex flex-col items-center justify-center bg-gradient-to-b from-black-900 to-gray-800 text-white min-w-full py-8 px-10">
             <div className="flex flex-col space-y-6 w-200">
                 <span
                     className="text-4xl font-bold text-transparent bg-clip-text bg-orange-500 flex justify-center"
-                > 
+                >
                     Mint Your NFT
                 </span>
-                <br />  
+                <br />
 
 
                 <div className="space-y-6 bg-black-800/60 p-8 rounded-xl shadow-lg border border-gray-700 backdrop-blur-sm">
@@ -94,7 +109,7 @@ const Minting = () => {
                         onChange={(e) => setImageDescription(e.target.value)}
                         className="w-full px-4 py-3 bg-gray-700/60 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder-gray-400"
                     />
- 
+
 
                     <TextField.Root
                         placeholder="Enter NFT Media URL"
@@ -113,14 +128,14 @@ const Minting = () => {
                             />
                         </div>
                     </div>
-                    
+
                 </div>
 
                 <br />
 
                 <button
                     onClick={() => mintNFT(getSeed(), imageName, imageDescription, imageURL)}
-                    disabled={isPending}
+                    disabled={isPending || (!mintEnabled)}
                     className={`
                         w-full py-3 px-4 rounded-lg font-medium 
                         bg-orange-500 hover:bg-orange-600 transition duration-300
@@ -144,7 +159,7 @@ const Minting = () => {
             </div>
             <br />
             <div className="flex index-start">
-              <Footer />
+                <Footer />
             </div>
         </div>
 

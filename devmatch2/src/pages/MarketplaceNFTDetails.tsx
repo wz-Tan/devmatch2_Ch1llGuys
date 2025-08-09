@@ -1,4 +1,4 @@
-import { Link, useLocation,useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { IoIosTrendingUp } from "react-icons/io";
 import { GoArrowLeft } from "react-icons/go";
 import { FaRegClock, FaRegUser } from "react-icons/fa6";
@@ -10,52 +10,53 @@ import React, { useState } from 'react';
 
 
 const MarketplaceNFTDetails = () => {
-  let userAccount=useCurrentAccount();
+  let userAccount = useCurrentAccount();
   const suiClient = useSuiClient();
   const packageID = useNetworkVariable("PackageId");
   const { mutate: signAndExecute } = useSignAndExecuteTransaction();
 
   async function buyListing(listing_id: string) {
-      const tx = new Transaction();
-  
-      let listing = await suiClient.getObject({
-        id: listing_id,
-        options: {
-          showContent: true
-        }
-      })
-  
-      let listing_price;
-  
-      if (listing.data?.content?.dataType === "moveObject") {
-        listing_price = Number((listing as any).data?.content?.fields.price)
+    const tx = new Transaction();
+
+    let listing = await suiClient.getObject({
+      id: listing_id,
+      options: {
+        showContent: true
       }
-  
-  
-      const fees = tx.splitCoins(tx.gas, [tx.pure.u64(listing_price!)])
-  
-      tx.moveCall({
-        arguments: [tx.object(MARKETPLACE_ID), tx.object(fees), tx.object(listing_id)],
-        target: `${packageID}::marketplace::buyListing`
-      })
-  
-      signAndExecute({ transaction: tx },
-        {
-          onSuccess: async ({ digest }) => {
-            await suiClient.waitForTransaction({
-              digest: digest,
-              options: {
-                showEffects: true,
-              },
-            });
-            //Refresh on Finish
-            window.location.reload();
-          }
-        }
-      )
+    })
+
+    let listing_price;
+
+    if (listing.data?.content?.dataType === "moveObject") {
+      listing_price = Number((listing as any).data?.content?.fields.price)
     }
 
-    async function deleteListing(listing_id: string) {
+
+    const fees = tx.splitCoins(tx.gas, [tx.pure.u64(listing_price!)])
+
+    tx.moveCall({
+      arguments: [tx.object(MARKETPLACE_ID), tx.object(fees), tx.object(listing_id)],
+      target: `${packageID}::marketplace::buyListing`
+    })
+
+    signAndExecute({ transaction: tx },
+      {
+        onSuccess: async ({ digest }) => {
+          await suiClient.waitForTransaction({
+            digest: digest,
+            options: {
+              showEffects: true,
+            },
+          });
+          //Refresh on Finish (settled)
+          // (TESTING NEEDED)
+          navigate(-1);
+        }
+      }
+    )
+  }
+
+  async function deleteListing(listing_id: string) {
     const tx = new Transaction();
 
     tx.moveCall({
@@ -72,7 +73,8 @@ const MarketplaceNFTDetails = () => {
               showEffects: true,
             },
           });
-           window.location.reload();
+          //Refresh on Finish (settled)
+          navigate(-1);
         }
       }
     )
@@ -83,21 +85,21 @@ const MarketplaceNFTDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const listing = location.state?.listing;
-  let nft=listing.nft.fields;
-  let rarity:string=nft.rarity.variant;
-  let prevOwners:any[]=nft.prevOwners;
+  let nft = listing.nft.fields;
+  let rarity: string = nft.rarity.variant;
+  let prevOwners: any[] = nft.prevOwners;
 
-  
+
   if (!nft) {
     return <div className="text-white">NFT data not found</div>;
   }
   // Calculate XP progress - assuming 200 XP per level
   const currentLevelXP = Number(nft.xp);
   const xpToNextLevel = Number(nft.xp_to_next_level);
-  const xpProgress = (currentLevelXP/ (currentLevelXP+xpToNextLevel))*100 ;
+  const xpProgress = (currentLevelXP / (currentLevelXP + xpToNextLevel)) * 100;
 
   // Rarity colors and styles for dark theme
-  const getRarityStyle = (rarity:any) => {  
+  const getRarityStyle = (rarity: any) => {
     const baseStyles = {
       common: 'bg-gray-700 text-gray-200',
       uncommon: 'bg-green-900 text-green-200',
@@ -106,7 +108,7 @@ const MarketplaceNFTDetails = () => {
       legendary: 'bg-orange-900 text-orange-200',
       mythic: 'bg-pink-900 text-pink-200'
     };
-  
+
     const borderStyles = {
       common: 'border-black hover:border-gray-400',
       uncommon: 'border-black hover:border-green-500',
@@ -115,10 +117,10 @@ const MarketplaceNFTDetails = () => {
       legendary: 'border-black hover:border-yellow-400',
       mythic: 'border-black hover:border-pink-500'
     };
-  
+
     const base = baseStyles[rarity as keyof typeof baseStyles] || 'bg-gray-700 text-gray-200';
     const border = borderStyles[rarity as keyof typeof borderStyles] || 'border-black hover:border-gray-400';
-  
+
     return `${base} ${border}`;
   };
 
@@ -127,11 +129,11 @@ const MarketplaceNFTDetails = () => {
       {/* Header */}
       <div className="bg-gray-800 shadow-lg border-b border-gray-700">
         <div className="max-w-6xl mx-auto px-6 py-4">
-          <button 
+          <button
             className="flex items-center text-gray-300 hover:text-orange-500 transition-colors"
-            onClick={()=>navigate(-1)}>
-              <GoArrowLeft className="w-5 h-5 mr-2"/> 
-              Go Back
+            onClick={() => navigate(-1)}>
+            <GoArrowLeft className="w-5 h-5 mr-2" />
+            Go Back
           </button>
         </div>
       </div>
@@ -144,7 +146,7 @@ const MarketplaceNFTDetails = () => {
             <div className="bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-700">
               <div className="aspect-square bg-gradient-to-br from-gray-700 to-gray-600 flex items-center justify-center p-12">
                 <div className="text-9xl transform hover:scale-110 transition-transform duration-300 w-full h-full">
-                  <img className='w-full h-full object-cover rounded-2xl' src={nft.mediaURL} alt={nft.name}/>
+                  <img className='w-full h-full object-cover rounded-2xl' src={nft.mediaURL} alt={nft.name} />
                 </div>
               </div>
             </div>
@@ -200,13 +202,13 @@ const MarketplaceNFTDetails = () => {
                   <span className="font-medium text-white">Experience Points</span>
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-white">Current XP: {currentLevelXP}</span>
                   <span className="text-white">Next Level: {xpToNextLevel} XP</span>
                 </div>
-                
+
                 <div className="text-center text-sm text-gray-400">
                   {Math.round(xpProgress)}% to Level {Number(nft.level) + 1}
                 </div>
@@ -222,21 +224,21 @@ const MarketplaceNFTDetails = () => {
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <div className="flex flex-col mb-[10px] overflow-auto">
-                  <h1 className="text-gray-400">Current Owner</h1>
-                  <h1 className="font-sm text-white max-w-full">{nft.owner}</h1>
-                </div>
-                
+                    <h1 className="text-gray-400">Current Owner</h1>
+                    <h1 className="font-sm text-white max-w-full">{nft.owner}</h1>
+                  </div>
+
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-400">Price</span>
-                  <span className="font-bold text-orange-500 text-lg">{listing.price/1e9} SUI</span>
+                  <span className="font-bold text-orange-500 text-lg">{listing.price / 1e9} SUI</span>
                 </div>
-            
+
                 {prevOwners.length > 0 && (
                   <div className="pt-2 border-t flex flex-col border-gray-700">
                     <h1 className="text-sm text-gray-400">Previous Owners: </h1>
                     <h1 className="text-sm text-gray-300">
-                      {prevOwners.map((owner)=>(<h1 className="font-sm text-white">{owner}</h1>))}
+                      {prevOwners.map((owner) => (<h1 className="font-sm text-white">{owner}</h1>))}
                     </h1>
                   </div>
                 )}
@@ -245,23 +247,23 @@ const MarketplaceNFTDetails = () => {
 
             {/* Action Buttons */}
             <div className="flex gap-4">
-              <button 
+              <button
                 className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-4 px-6 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl"
-                onClick={()=>{buyListing(listing.id.id)}}
+                onClick={() => { buyListing(listing.id.id) }}
               >
                 Purchase NFT
               </button>
             </div>
-            
+
             <div className="flex mt-[-10px]">
-              {(userAccount?.address===listing.owner) ?  
-              <button 
-                className="flex-1 bg-gradient-to-r from-orange-800 to-orange-800 text-white py-4 px-6 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl"
-                onClick={()=>{deleteListing(listing.id.id)}}
-              >
-                Remove Listing
-              </button> : null}
-              
+              {(userAccount?.address === listing.owner) ?
+                <button
+                  className="flex-1 bg-gradient-to-r from-orange-800 to-orange-800 text-white py-4 px-6 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+                  onClick={() => { deleteListing(listing.id.id) }}
+                >
+                  Remove Listing
+                </button> : null}
+
             </div>
           </div>
         </div>

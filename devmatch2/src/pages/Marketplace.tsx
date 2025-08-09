@@ -6,7 +6,7 @@ import { useNetworkVariable } from '../networkConfig';
 import { Button } from '@radix-ui/themes';
 import Navbar from '../components/Navbar';
 import NFTCard from '../components/ListingNFTCard';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
 import ListingNFTCard from '../components/ListingNFTCard';
 
@@ -14,6 +14,8 @@ const Marketplace = () => {
   const userAccount = useCurrentAccount();
   const suiClient = useSuiClient();
   const packageID = useNetworkVariable("PackageId");
+
+  const navigate = useNavigate();
 
   const [marketplaceItems, setMarketplaceItems] = useState<any[]>([])
   const { mutate: signAndExecute } = useSignAndExecuteTransaction();
@@ -59,7 +61,7 @@ const Marketplace = () => {
   //Create A New Listing
   async function createListing(nft: string, price: number) {
     const tx = new Transaction();
-    price=Math.floor(price*1e9);
+    price = Math.floor(price * 1e9);
 
     tx.moveCall({
       arguments: [tx.object(MARKETPLACE_ID), tx.object(nft), tx.pure.u64(price), tx.object(CLOCK_ID)],
@@ -75,7 +77,8 @@ const Marketplace = () => {
               showEffects: true,
             },
           });
-          //Refresh on Finish
+          //Refresh on Finish (settled)
+          navigate(-1);
           retrieveMarketplace()
         }
       }
@@ -115,7 +118,8 @@ const Marketplace = () => {
               showEffects: true,
             },
           });
-          //Refresh on Finish
+          //Refresh on Finish (settled)
+          navigate(-1);
           retrieveMarketplace()
         }
       }
@@ -131,78 +135,78 @@ const Marketplace = () => {
   };
 
   //components
-    const ExploreHeader = () => (
-      <div className="text-center py-16 px-4">
-        <p className="text-orange-500 text-sm font-medium mb-2">Explore</p>
-        <h1 className="text-4xl md:text-5xl font-bold mb-6">Welcome To Explore</h1>
-        <div className="flex items-center justify-center space-x-2 text-sm">
-          <Link to="/" className="text-gray-400 hover:text-white">Home</Link>
-          <span className="text-gray-600">→</span>
-          <span className="text-orange-500">Explore</span>
+  const ExploreHeader = () => (
+    <div className="text-center py-16 px-4">
+      <p className="text-orange-500 text-sm font-medium mb-2">Explore</p>
+      <h1 className="text-4xl md:text-5xl font-bold mb-6">Welcome To Explore</h1>
+      <div className="flex items-center justify-center space-x-2 text-sm">
+        <Link to="/" className="text-gray-400 hover:text-white">Home</Link>
+        <span className="text-gray-600">→</span>
+        <span className="text-orange-500">Explore</span>
+      </div>
+    </div>
+  );
+
+  const ResultsCount = ({ count }: { count: number }) => (
+    <div className="mb-6">
+      <p className="text-gray-400 text-sm">{count.toLocaleString()} results found</p>
+    </div>
+  );
+
+  //max 4 cards per row using grid layout (maybe can change to flex also?)
+  const NFTGrid = ({ displayedNFTs }: { displayedNFTs: any }) => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
+      {displayedNFTs.map((item: any) => (
+        <div key={item.UID} className="w-full">
+          <ListingNFTCard item={item} />
         </div>
-      </div>
-    );
-  
-    const ResultsCount = ({ count }:{count: number}) => (
-      <div className="mb-6">
-        <p className="text-gray-400 text-sm">{count.toLocaleString()} results found</p>
-      </div>
-    );
-  
-    //max 4 cards per row using grid layout (maybe can change to flex also?)
-    const NFTGrid = ({ displayedNFTs }:{displayedNFTs:any}) => (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
-        {displayedNFTs.map((item:any) => (
-          <div key={item.UID} className="w-full">
-            <ListingNFTCard item={item} />
-          </div>
-        ))}
-      </div>
-    );
-  
-    const LoadMoreButton = ({ onClick }:{onClick:any}) => (
-      <div className="text-center mb-16">
-        <button
-          onClick={onClick}
-          className="border border-gray-600 hover:border-orange-500 hover:text-orange-500 px-8 py-3 rounded-lg font-medium transition-colors"
-        >
-          Load More
-        </button>
-      </div>
-    );
-  
-  
-    const NoResults = () => (
-      <div className="text-center py-16">
-        <div className="text-6xl mb-4">🔍</div>
-        <h3 className="text-xl font-bold mb-2">No NFTs</h3>
-      </div>
-    );
+      ))}
+    </div>
+  );
+
+  const LoadMoreButton = ({ onClick }: { onClick: any }) => (
+    <div className="text-center mb-16">
+      <button
+        onClick={onClick}
+        className="border border-gray-600 hover:border-orange-500 hover:text-orange-500 px-8 py-3 rounded-lg font-medium transition-colors"
+      >
+        Load More
+      </button>
+    </div>
+  );
+
+
+  const NoResults = () => (
+    <div className="text-center py-16">
+      <div className="text-6xl mb-4">🔍</div>
+      <h3 className="text-xl font-bold mb-2">No NFTs</h3>
+    </div>
+  );
 
   return (
-      <div className="bg-black text-white min-h-screen">
-        <ExploreHeader />
-    
-        <div className="max-w-7xl mx-auto px-4 lg:px-6">
-    
-          <ResultsCount count={marketplaceItems.length} />
-    
-          {marketplaceItems.length > 0 ? (
-            <>
-              <NFTGrid displayedNFTs={displayedNFTs} />
-  
-              {displayedNFTs.length < marketplaceItems.length && (
-                <LoadMoreButton onClick={loadMore} />
-              )}
-            </>
-          ) : (
-            <NoResults/>
-          )}
-        </div>
-    
-        <Footer />
+    <div className="bg-black text-white min-h-screen">
+      <ExploreHeader />
+
+      <div className="max-w-7xl mx-auto px-4 lg:px-6">
+
+        <ResultsCount count={marketplaceItems.length} />
+
+        {marketplaceItems.length > 0 ? (
+          <>
+            <NFTGrid displayedNFTs={displayedNFTs} />
+
+            {displayedNFTs.length < marketplaceItems.length && (
+              <LoadMoreButton onClick={loadMore} />
+            )}
+          </>
+        ) : (
+          <NoResults />
+        )}
       </div>
-    );
+
+      <Footer />
+    </div>
+  );
 }
 
 export default Marketplace
