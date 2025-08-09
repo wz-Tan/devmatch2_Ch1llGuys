@@ -1,45 +1,162 @@
-import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from '@mysten/dapp-kit'
-import React, { useEffect } from 'react'
-import { useNetworkVariable } from '../networkConfig';
+import React, { useState } from 'react'
+// import { WalletAccount } from '@wallet-standard/base';
+// import { SuiClient } from '@mysten/sui/client';
+import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from '@mysten/dapp-kit';
 import { Transaction } from '@mysten/sui/transactions';
-import { Button } from '@radix-ui/themes';
+import { useNetworkVariable } from '../networkConfig';
+import { Button, Container, Heading, TextField, Text } from '@radix-ui/themes'
+import Footer from '../components/Footer';
+import '../index.css';
+
 
 const Minting = () => {
-    const userAccount=useCurrentAccount();
-    const packageId=useNetworkVariable("PackageId");
-    const suiClient=useSuiClient();
+    let userAccount = useCurrentAccount();
+    const packageID = useNetworkVariable("PackageId");
+    const suiClient = useSuiClient();
 
-    const {mutate: signAndExecute} = useSignAndExecuteTransaction();
 
-    //Contract Call Here
-    async function mintNFT(name: string, description: string, mediaURL: string) {
-        const tx=new Transaction();
-        let seed=generateSeed();
+    const {
+        mutate: signAndExecute,
+        isSuccess,
+        isPending
+    } = useSignAndExecuteTransaction();
+
+
+    async function mintNFT(seed: number, name: string, description: string, mediaURL: string) {
+        const tx = new Transaction();
+
 
         tx.moveCall({
             arguments: [tx.pure.u64(seed), tx.pure.string(name), tx.pure.string(description), tx.pure.string(mediaURL)],
-            target: `${packageId}::nft::mint_NFT`
+            target: `${packageID}::nft::mint_NFT`
         });
 
-        signAndExecute({transaction: tx})
-    }
-    
-    //Get Randomised Seed for Rarity (Slot in as Argument)
-    function generateSeed(): number{
-      return Math.floor(Math.random() * 100000);
+
+        //Continue Here
+        signAndExecute({ transaction: tx },
+            {
+                onSuccess: async ({ digest }) => {
+                    await suiClient.waitForTransaction({
+                        digest: digest,
+                        options: {
+                            showEffects: true,
+                        },
+                    });
+
+
+                    let digestInfo = await suiClient.getTransactionBlock({
+                        digest: digest,
+                        options: {
+                            showBalanceChanges: true,
+                            showEffects: true,
+                            showEvents: true,
+                            showInput: true,
+                            showObjectChanges: true
+                        }
+                    });
+                }
+            }
+        )
     }
 
-  return (
-    <>
-    <div>Minting</div>
-    <Button
-      onClick={()=>{
-        mintNFT("NFT","NFT","data:image/webp;base64,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")
-      }}>
-      Add Listing
-    </Button>
-    </>
-  )
+
+    function getSeed(): number {
+        return Math.floor(Math.random() * 100000);
+    }
+
+
+    const [imageURL, setImageURL] = useState("")
+    const [imageName, setImageName] = useState("")
+    const [imageDescription, setImageDescription] = useState("")
+
+
+    return (
+        <div className="flex flex-col items-center justify-center bg-gradient-to-b from-gray-900 to-gray-800 text-white min-w-full py-8 px-10">
+            <Container size="2" className="max-w-2xl mx-auto">
+                <div className="flex flex-col space-y-8 w-200">
+                    <Heading
+                        size="8"
+                        align="center"
+                        className="text-4xl font-bold text-transparent bg-clip-text bg-[linear-gradient(45deg,_#FFB75E,_#ED8F03)]"
+                    > 
+                        Mint Your NFT
+                    </Heading>
+                    <br />  
+
+
+                    <div className="space-y-6 bg-gray-800/60 p-8 rounded-xl shadow-lg border border-gray-700 backdrop-blur-sm">
+                        <TextField.Root
+                            placeholder="Enter NFT name"
+                            onChange={(e) => setImageName(e.target.value)}
+                            className="w-full px-4 py-3 bg-gray-700/60 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder-gray-400"
+                        />
+                            <TextField.Slot>
+                              <br />
+                            </TextField.Slot>
+
+                        <TextField.Root
+                            placeholder="Enter NFT description"
+                            onChange={(e) => setImageDescription(e.target.value)}
+                            className="w-full px-4 py-3 bg-gray-700/60 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder-gray-400"
+                        />
+                            <TextField.Slot>
+                              <br />
+                            </TextField.Slot>
+
+                        <TextField.Root
+                            placeholder="Enter NFT Media URL"
+                            onChange={(e) => setImageURL(e.target.value)}
+                            className="w-full px-4 py-3 bg-gray-700/60 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder-gray-400"
+                        />
+                            <TextField.Slot>
+                              <br />
+                            </TextField.Slot>
+
+                        <Text className="flex flex-col items-center justify-center text-lg font-medium text-gray-300">Preview</Text>
+                        <div className="w-72 h-72 rounded-xl overflow-hidden border border-gray-700 bg-gray-800/60 shadow-md backdrop-blur-sm">
+                            <img
+                                src={imageURL}
+                                alt="NFT Preview"
+                                className="flex flex-col items-center justify-center w-full h-full object-cover"
+                            />
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <Button
+                        size="3"
+                        onClick={() => mintNFT(getSeed(), imageName, imageDescription, imageURL)}
+                        disabled={isPending}
+                        className={`
+                            w-full py-3 px-4 rounded-lg font-medium 
+                            bg-[linear-gradient(45deg,_#00f5ff,_#ff00e0)]
+                            hover:opacity-90 transition-opacity duration-200
+                            disabled:opacity-50 disabled:cursor-not-allowed
+                            focus:ring-2 focus:ring-cyan-500 focus:ring-opacity-50
+                        `}
+                    >
+                        {isPending ? (
+                            <span className="flex items-center justify-center">
+                                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Minting...
+                            </span>
+                        ) : (
+                            'Mint NFT'
+                        )}
+                    </Button>
+                </div>
+            </Container>
+            <br />
+            <div className="flex index-start">
+              <Footer />
+            </div>
+        </div>
+
+    )
 }
 
 export default Minting
