@@ -71,7 +71,7 @@ const Minting = () => {
 
 
     return (
-        <div className="flex flex-col items-center justify-center bg-gradient-to-b from-gray-900 to-gray-800 text-white min-w-full py-8 px-10">
+        <div className="flex flex-col items-center justify-center bg-gradient-to-b from-black-900 to-gray-800 text-white min-w-full py-8 px-10">
             <Container size="2" className="max-w-2xl mx-auto">
                 <div className="flex flex-col space-y-8 w-200">
                     <Heading
@@ -84,7 +84,7 @@ const Minting = () => {
                     <br />  
 
 
-                    <div className="space-y-6 bg-gray-800/60 p-8 rounded-xl shadow-lg border border-gray-700 backdrop-blur-sm">
+                    <div className="space-y-6 bg-black-800/60 p-8 rounded-xl shadow-lg border border-gray-700 backdrop-blur-sm">
                         <TextField.Root
                             placeholder="Enter NFT name"
                             onChange={(e) => setImageName(e.target.value)}

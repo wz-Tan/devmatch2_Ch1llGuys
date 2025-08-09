@@ -19,8 +19,9 @@ const rarityTextColors = {
 };
 
 function ListingNFTCard({ item }:{item:any}) {
-  let nft=item.nft;
-  let rarity:string=nft.rarity.variant;
+  let nft=item.nft.fields;
+  console.log("NFT is", nft)
+  let rarity=nft.rarity.variant;
   const borderColor = rarityBorderColors[rarity as keyof typeof rarityBorderColors] || "border-white";
   const textColor = rarityTextColors[rarity as keyof typeof rarityTextColors] || "text-white";
 
@@ -56,7 +57,7 @@ function ListingNFTCard({ item }:{item:any}) {
           <div className="flex flex-col min-w-0 flex-1 items-end">
             <p className="text-gray-400 text-xs uppercase tracking-wide">Price</p>
             <p className="text-white font-bold text-sm truncate" title={item.price}>
-              {item.price}
+              {item.price/1e9} SUI
             </p>
           </div>
         </div>

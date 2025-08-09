@@ -49,7 +49,7 @@ const ListingPopup = (props: ListingProps) => {
       duration: listingType === 'auction' ? duration : null
     };
     console.log('Listing data:', listingData);
-    alert('NFTs listed successfully!');
+    console.log(selectedNFT,price)
     // Reset form and close popup
     setselectedNFT('');
     setPrice(0);
@@ -157,11 +157,11 @@ const ListingPopup = (props: ListingProps) => {
                       ? 'border border-orange-500 rounded-md bg-gray-700'
                       : 'hover:bg-gray-700'
                       }`}
-                    onClick={() => handleNFTSelect(nft.id)}
+                    onClick={() => handleNFTSelect(nft.id.id)}
                   >
                     <div className="aspect-square bg-gradient-to-br from-purple-400 to-pink-600 flex items-center justify-center text-4xl">
                       <img
-                        src={nft.image}
+                        src={nft.mediaURL}
                         alt={nft.name}
                         className="object-cover w-full h-full"
                       />
@@ -270,7 +270,8 @@ const ListingPopup = (props: ListingProps) => {
               Cancel
             </button>
             <button
-              onClick={listingType === "fixed" ? () => { createListing(selectedNFT, price) } : () => { startAuction(price, parseInt(duration), selectedNFT) }}
+              onClick={listingType === "fixed" ? () => { 
+                createListing(selectedNFT, price) } : () => { startAuction(price, parseInt(duration), selectedNFT) }}
               disabled={!selectedNFT}
               className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:bg-gray-600 disabled:cursor-not-allowed"
             >
