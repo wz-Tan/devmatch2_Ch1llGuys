@@ -120,3 +120,37 @@ public fun transferOwnershipXP(nft: &mut NFT, ctx: &mut TxContext) {
     nft.xp_to_next_level = nft.xp_to_next_level-totalXP;
 }
 
+public fun bid_transferOwnershipXP(nft: &mut NFT, new_owner:address) {
+    push_back(&mut nft.prevOwners, nft.owner);
+    nft.owner = new_owner;
+
+    //Level Up NFT (Each Level Requires 1000xp * nft level ^ 2)
+    let mut earnedXP = BASE_TRANSACTION_XP;
+    let rarity = nft.rarity;
+
+    if (rarity==Rarity::uncommon) {
+        earnedXP = (earnedXP*110)/100;
+    } else if (rarity==Rarity::rare) {
+        earnedXP = (earnedXP*120)/100;
+    } else if (rarity==Rarity::epic) {
+        earnedXP = (earnedXP*150)/100;
+    } else if (rarity==Rarity::legendary) {
+        earnedXP = (earnedXP*175)/100;
+    } else if (rarity==Rarity::mythic) {
+        earnedXP = earnedXP*2;
+    };
+
+    let currentXP = nft.xp;
+    let mut totalXP = currentXP+earnedXP;
+    let requiredXP = nft.xp_to_next_level;
+
+    //Level Up
+    if (totalXP>=requiredXP) {
+        nft.level = nft.level+1;
+        totalXP = totalXP-requiredXP;
+        nft.xp_to_next_level = (500*(nft.level*nft.level))
+    };
+
+    nft.xp = totalXP;
+    nft.xp_to_next_level = nft.xp_to_next_level-totalXP;
+}

@@ -128,7 +128,7 @@ const ListingPopup = (props: ListingProps) => {
 
             className="text-gray-400 hover:text-white text-2xl"
           >
-            ×
+
           </button>
         </div >
 
