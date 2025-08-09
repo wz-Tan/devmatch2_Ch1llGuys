@@ -17,10 +17,10 @@ const CollectionNFTDetails = () => {
   if (!nft) {
     return <div className="text-white">NFT data not found</div>;
   }
-  // Calculate XP progress - assuming 200 XP per level
-  const currentLevelXP = nft.xp;
-  const xpToNextLevel = nft.xp_to_next_level;
-  const xpProgress = (currentLevelXP / (currentLevelXP+xpToNextLevel)) * 100;
+
+  const currentLevelXP = Number(nft.xp);
+  const xpToNextLevel = Number(nft.xp_to_next_level);
+  const xpProgress = (currentLevelXP/ (currentLevelXP+xpToNextLevel))*100 ;
 
   // Rarity colors and styles for dark theme
   const getRarityStyle = (rarity:any) => {  
