@@ -100,22 +100,26 @@ const Minting = () => {
 
 
                 <div className="space-y-6 bg-black-800/60 p-8 rounded-xl shadow-lg border border-gray-700 backdrop-blur-sm">
-                    <TextField.Root
+                    <input
+                        type="text"
                         placeholder="Enter NFT name"
+                        value={imageName}
                         onChange={(e) => setImageName(e.target.value)}
                         className="w-full px-4 py-3 bg-gray-700/60 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder-gray-400"
                     />
-
-
-                    <TextField.Root
+                    
+                    <textarea
                         placeholder="Enter NFT description"
+                        value={imageDescription}
                         onChange={(e) => setImageDescription(e.target.value)}
-                        className="w-full px-4 py-3 bg-gray-700/60 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder-gray-400"
+                        rows={3}
+                        className="w-full px-4 py-3 bg-gray-700/60 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder-gray-400 resize-none"
                     />
- 
-
-                    <TextField.Root
+                    
+                    <input
+                        type="url"
                         placeholder="Enter NFT Media URL"
+                        value={imageURL}
                         onChange={(e) => handleURLChange(e.target.value)}
                         className="w-full px-4 py-3 bg-gray-700/60 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder-gray-400"
                     />
