@@ -1,18 +1,38 @@
-import React from 'react';
+import React, { useState,useEffect } from 'react';
+import BiddingPopup from '../components/BiddingPopup';
 import { useLocation,Link,useNavigate } from 'react-router-dom';
 import { ArrowLeft, Star, TrendingUp, User, Clock } from 'lucide-react';
 
 const AuctionDetails = () => {
+  const [biddingPopUp, setBiddingPopUp] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const nft = location.state?.nft;
+  const auction = location.state?.auction;
 
-  if (!nft) {
+  if (!auction) {
     return <div className="text-white">Auction data not found</div>;
   }
 
+    // 🔹 Lock background scroll when popup is open
+    useEffect(() => {
+      if (biddingPopUp) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
+  
+      // Cleanup in case component unmounts
+      return () => {
+        document.body.style.overflow = '';
+      };
+    }, [biddingPopUp]);
+  
+    if (!auction) {
+      return <div className="text-white">Auction data not found</div>;
+    }
+
   const xpPerLevel = 200;
-  const currentLevelXP = nft.XP % xpPerLevel;
+  const currentLevelXP = auction.XP % xpPerLevel;
   const xpToNextLevel = xpPerLevel - currentLevelXP;
   const xpProgress = (currentLevelXP / xpPerLevel) * 100;
 
@@ -50,7 +70,7 @@ const AuctionDetails = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-black to-gray-900 overflow-hidden">
       <div className="bg-gray-800 shadow-lg border-b border-gray-700">
         <div className="max-w-6xl mx-auto px-6 py-4">
           <button 
@@ -69,27 +89,18 @@ const AuctionDetails = () => {
             <div className="bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-700">
               <div className="aspect-square bg-gradient-to-br from-gray-700 to-gray-600 flex items-center justify-center p-12">
                 <div className="text-9xl transform hover:scale-110 transition-transform duration-300">
-                  {nft.asset_url}
+                  {auction.nftObject.mediaURL}
                 </div>
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-2">
-              {nft.tags.map((tag, index) => (
-                <span
-                  key={index}
-                  className="px-3 py-1 bg-gray-700 rounded-full text-sm text-gray-300 border border-gray-600 hover:border-orange-500 transition-colors"
-                >
-                  #{tag}
-                </span>
-              ))}
-            </div>
+          
           </div>
 
           <div className="space-y-8">
             <div className="bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700">
-              <h1 className="text-4xl font-bold text-white mb-4">{nft.nftName}</h1>
-              <p className="text-lg text-gray-300 leading-relaxed">{nft.description}</p>
+              <h1 className="text-4xl font-bold text-white mb-4">{auction.nftObject.name}</h1>
+              <p className="text-lg text-gray-300 leading-relaxed">{auction.nftObject.description}</p>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -98,43 +109,54 @@ const AuctionDetails = () => {
                   <TrendingUp className="w-5 h-5 text-orange-500 mr-2" />
                   <span className="text-sm font-medium text-gray-400">Level</span>
                 </div>
-                <div className="text-3xl font-bold text-white">{nft.level}</div>
+                <div className="text-3xl font-bold text-white">{auction.nftObject.level}</div>
               </div>
 
               <div className="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
                 <div className="text-sm font-medium text-gray-400 mb-2">Rarity</div>
-                <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold border ${getRarityStyle(nft.rarity)}`}>
-                  {nft.rarity.charAt(0).toUpperCase() + nft.rarity.slice(1)}
+                <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold border ${getRarityStyle(auction.nftObject.rarity)}`}>
+                  {auction.nftObject.rarity.charAt(0).toUpperCase() + auction.nftObject.rarity.slice(1)}
                 </div>
               </div>
             </div>
             
             <div className="grid grid-cols-2 gap-4">
-              {nft.currentBid ? (
+              {auction.highestBid.amount ? (
               <div className="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
                 <div className="text-sm text-gray-400 mb-2">Current Bid</div>
-                <div className="text-2xl font-bold text-orange-400">{nft.currentBid}</div>
+                <div className="text-2xl font-bold text-orange-400">{auction.highestBid.amount}</div>
               </div>
               ):(
                 <div className="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
                   <div className="text-sm text-gray-400 mb-2">Minimum Bid</div>
-                  <div className="text-2xl font-bold text-green-400">{nft.minimumBid}</div>
+                  <div className="text-2xl font-bold text-green-400">{auction.minPrice}</div>
                 </div>
               )}            
               <div className="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
                 <div className="text-sm text-gray-400 mb-2">Ending In</div>
-                <div className="text-2xl font-bold text-red-400">{getDaysLeft(nft.endingTime)}</div>
+                <div className="text-2xl font-bold text-red-400">{getDaysLeft(auction.ending)}</div>
               </div>
             </div>
 
             <div className="flex gap-4">
               <button 
                 className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-4 px-6 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl"
-                onClick={() => console.log(nft)}
+                onClick={() => setBiddingPopUp(true)}
               >
                 Place Bid
               </button>
             </div>
+            
+            <div
+              className='overscroll-none overflow-y-scroll h-32'
+            >
+              <BiddingPopup
+                isOpen={biddingPopUp}
+                onClose={() => setBiddingPopUp(false)}
+                auction = {auction}
+              />
+            </div>
+            
           </div>
         </div>
       </div>

@@ -12,6 +12,7 @@ import MarketplaceNFTDetails from './pages/MarketplaceNFTDetails'
 import CollectionNFTDetails from './pages/CollectionNFTDetails'
 import AuctionNFTDetails from './pages/AuctionNFTDetails'
 
+
 const App = () => {
   const router=createBrowserRouter(
     createRoutesFromElements(

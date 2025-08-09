@@ -4,10 +4,7 @@ import AuctionCard from '../components/AuctionCard';
 import Footer from '../components/Footer';
 
 const AuctionPage = () => {
-  // Add safety checks
-  if (!item.nftObject) {
-    return <div>NFT data not available</div>;
-}
+  
   // ai ahh mock data
   const nftData = [
     {
