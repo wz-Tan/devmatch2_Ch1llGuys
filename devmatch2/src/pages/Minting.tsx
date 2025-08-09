@@ -72,84 +72,76 @@ const Minting = () => {
 
     return (
         <div className="flex flex-col items-center justify-center bg-gradient-to-b from-black-900 to-gray-800 text-white min-w-full py-8 px-10">
-            <Container size="2" className="max-w-2xl mx-auto">
-                <div className="flex flex-col space-y-8 w-200">
-                    <Heading
-                        size="8"
-                        align="center"
-                        className="text-4xl font-bold text-transparent bg-clip-text bg-[linear-gradient(45deg,_#FFB75E,_#ED8F03)]"
-                    > 
-                        Mint Your NFT
-                    </Heading>
-                    <br />  
+            <div className="flex flex-col space-y-6 w-200">
+                <span
+                    className="text-4xl font-bold text-transparent bg-clip-text bg-orange-500 flex justify-center"
+                > 
+                    Mint Your NFT
+                </span>
+                <br />  
 
 
-                    <div className="space-y-6 bg-black-800/60 p-8 rounded-xl shadow-lg border border-gray-700 backdrop-blur-sm">
-                        <TextField.Root
-                            placeholder="Enter NFT name"
-                            onChange={(e) => setImageName(e.target.value)}
-                            className="w-full px-4 py-3 bg-gray-700/60 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder-gray-400"
-                        />
-                            <TextField.Slot>
-                              <br />
-                            </TextField.Slot>
+                <div className="space-y-6 bg-black-800/60 p-8 rounded-xl shadow-lg border border-gray-700 backdrop-blur-sm">
+                    <TextField.Root
+                        placeholder="Enter NFT name"
+                        onChange={(e) => setImageName(e.target.value)}
+                        className="w-full px-4 py-3 bg-gray-700/60 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder-gray-400"
+                    />
 
-                        <TextField.Root
-                            placeholder="Enter NFT description"
-                            onChange={(e) => setImageDescription(e.target.value)}
-                            className="w-full px-4 py-3 bg-gray-700/60 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder-gray-400"
-                        />
-                            <TextField.Slot>
-                              <br />
-                            </TextField.Slot>
 
-                        <TextField.Root
-                            placeholder="Enter NFT Media URL"
-                            onChange={(e) => setImageURL(e.target.value)}
-                            className="w-full px-4 py-3 bg-gray-700/60 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder-gray-400"
-                        />
-                            <TextField.Slot>
-                              <br />
-                            </TextField.Slot>
+                    <TextField.Root
+                        placeholder="Enter NFT description"
+                        onChange={(e) => setImageDescription(e.target.value)}
+                        className="w-full px-4 py-3 bg-gray-700/60 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder-gray-400"
+                    />
+ 
 
-                        <Text className="flex flex-col items-center justify-center text-lg font-medium text-gray-300">Preview</Text>
+                    <TextField.Root
+                        placeholder="Enter NFT Media URL"
+                        onChange={(e) => setImageURL(e.target.value)}
+                        className="w-full px-4 py-3 bg-gray-700/60 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder-gray-400"
+                    />
+
+
+                    <Text className="flex flex-col items-center justify-center text-lg font-medium text-orange-500">Preview</Text>
+                    <div className='flex justify-center mt-5'>
                         <div className="w-72 h-72 rounded-xl overflow-hidden border border-gray-700 bg-gray-800/60 shadow-md backdrop-blur-sm">
                             <img
                                 src={imageURL}
-                                alt="NFT Preview"
+                                alt={imageName}
                                 className="flex flex-col items-center justify-center w-full h-full object-cover"
                             />
                         </div>
                     </div>
-
-                    <br />
-
-                    <Button
-                        size="3"
-                        onClick={() => mintNFT(getSeed(), imageName, imageDescription, imageURL)}
-                        disabled={isPending}
-                        className={`
-                            w-full py-3 px-4 rounded-lg font-medium 
-                            bg-[linear-gradient(45deg,_#00f5ff,_#ff00e0)]
-                            hover:opacity-90 transition-opacity duration-200
-                            disabled:opacity-50 disabled:cursor-not-allowed
-                            focus:ring-2 focus:ring-cyan-500 focus:ring-opacity-50
-                        `}
-                    >
-                        {isPending ? (
-                            <span className="flex items-center justify-center">
-                                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                                Minting...
-                            </span>
-                        ) : (
-                            'Mint NFT'
-                        )}
-                    </Button>
+                    
                 </div>
-            </Container>
+
+                <br />
+
+                <button
+                    onClick={() => mintNFT(getSeed(), imageName, imageDescription, imageURL)}
+                    disabled={isPending}
+                    className={`
+                        w-full py-3 px-4 rounded-lg font-medium 
+                        bg-orange-500 hover:bg-orange-600 transition duration-300
+                        disabled:opacity-50 disabled:cursor-not-allowed
+                        focus:ring-2 focus:ring-cyan-500 focus:ring-opacity-50
+                        text-xl font-bold cursor-pointer
+                    `}
+                >
+                    {isPending ? (
+                        <span className="flex items-center justify-center">
+                            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Minting...
+                        </span>
+                    ) : (
+                        'Mint NFT'
+                    )}
+                </button>
+            </div>
             <br />
             <div className="flex index-start">
               <Footer />

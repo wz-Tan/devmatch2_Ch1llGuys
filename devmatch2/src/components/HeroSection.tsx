@@ -1,9 +1,9 @@
-import hero from '../assets/hero.png';
+import nft from '../assets/nft.png';
 import { Link } from 'react-router-dom';
 
 function HeroSection() {
   return (
-    <section className="flex items-center justify-between px-40 py-16 my-20">
+    <section className="flex items-center justify-between px-40 pb-16 my-20">
       <div className="flex-1 max-w-2xl">
         <div className='mb-8'>
           <h1 className="text-6xl font-bold mb-6">Explore The Best</h1>
@@ -29,8 +29,19 @@ function HeroSection() {
         </div>
       </div>
       <div className="flex-1 flex justify-center">
-        <img className='h-100 '
-          src={hero}
+        <img 
+          src={nft}
+          className="
+            w-full h-full object-cover
+            [mask-image:radial-gradient(circle,rgba(0,0,0,1)_85%,rgba(0,0,0,0)_100%)]
+            [mask-repeat:no-repeat]
+            [mask-position:center]
+            [mask-size:cover]
+            [-webkit-mask-image:radial-gradient(circle,rgba(0,0,0,1)_85%,rgba(0,0,0,0)_100%)]
+            [-webkit-mask-repeat:no-repeat]
+            [-webkit-mask-position:center]
+            [-webkit-mask-size:cover]
+          "
         />
       </div>
     </section>

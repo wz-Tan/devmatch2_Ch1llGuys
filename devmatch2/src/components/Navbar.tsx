@@ -9,7 +9,7 @@ function Navbar({ onListNFTClick }: { onListNFTClick: any }) {
         <Link to="/" className="text-2xl font-bold text-orange-500 hover:text-orange-400">
           N
         </Link>
-        <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 gap-[10px]">
+        <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 gap-10">
           <Link to="/" className="text-gray-300 hover:text-white">
             Home
           </Link>
