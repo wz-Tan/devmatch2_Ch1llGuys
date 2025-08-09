@@ -60,12 +60,8 @@ const Collection = () => {
     const ProfileHeader = () => (
       <div className="text-center py-16 px-4">
         <div className="mb-6">
-          <div className="w-24 h-24 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center self-center text-4xl mx-auto mb-4">
-            <img src="../assets/hero.png"
-            >
-            </img>
-          </div>
-          <h3 className="text-4xl md:text-5xl font-bold mb-2">My NFT Collection</h3>
+          
+          <h3 className="text-4xl md:text-5xl font-bold mb-3">My NFT Collection</h3>
           <p className="text-orange-500 text-lg font-medium mb-4">{userAccount?.address}</p>
           <p className="text-gray-400 text-center">
             Welcome to your personal NFT collection. Manage, view, and track your digital assets.
