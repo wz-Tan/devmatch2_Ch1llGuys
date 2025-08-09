@@ -2,27 +2,58 @@ import { Link } from "react-router-dom";
 import useCountdown from "../hooks/useCountdown";
 
 const rarityBorderColors = {
-    common: "border-black hover:border-gray-400",
-    uncommon: "border-black hover:border-green-500",
-    rare: "border-black hover:border-blue-500",
-    epic: "border-black hover:border-purple-500",
-    legendary: "border-black hover:border-yellow-400",
-    mythic: "border-black hover:border-pink-500"
+    'common': "border-black hover:border-gray-400",
+    'uncommon': "border-black hover:border-green-500",
+    'rare': "border-black hover:border-blue-500",
+    'epic': "border-black hover:border-purple-500",
+    'legendary': "border-black hover:border-yellow-400",
+    'mythic': "border-black hover:border-pink-500"
 };
 
 const rarityTextColors = {
-    common: "text-gray-400",
-    uncommon: "text-green-500",
-    rare: "text-blue-500",
-    epic: "text-purple-500",
-    legendary: "text-yellow-400",
-    mythic: "text-pink-500"
+    'common': "text-gray-400",
+    'uncommon': "text-green-500",
+    'rare': "text-blue-500",
+    'epic': "text-purple-500",
+    'legendary': "text-yellow-400",
+    'mythic': "text-pink-500"
 };
 
+type AuctionProp = {
+    id: string,
+    nft: string,
+    minPrice: number,
+    starting: number,
+    ending: string, // TODO : check
+    highestBidID: string,
+
+    // does not follow format, refactor when needed
+    nftObject: {
+        id: string,
+        name: string,
+        description: string,
+        mediaURL: string,
+        owner: string,
+        prevOwners: string[],
+        level: number,
+        xp: number,
+        xp_to_next_level: number,
+        rarity: string,
+        auctionRecord: string[]
+    },
+    highestBid: {
+        id: string,
+        auctionID: string,
+        bidder: string,
+        amount: number,
+        time: string // TODO : check
+    },
+}
+
 // not sure what the item prop will be
-function AuctionCard({ item }) {
-    const borderColor = rarityBorderColors[item.nftObject.rarity] || "border-white";
-    const textColor = rarityTextColors[item.nftObject.rarity] || "text-white";
+const AuctionCard = (item: AuctionProp) => {
+    const borderColor = rarityBorderColors[item.nftObject.rarity as keyof typeof rarityBorderColors] || "border-white";
+    const textColor = rarityTextColors[item.nftObject.rarity as keyof typeof rarityTextColors] || "text-white";
     const { days, hours, minutes, seconds } = useCountdown(item.ending);
 
     const formatCountdown = () => {
@@ -91,7 +122,7 @@ function AuctionCard({ item }) {
                     {/* TODO: link to nftdetails? according to our discussion */}
                     <Link to={"/auctiondetails"} state={{ nft: item }}>
                         <button className="border border-gray-500 group-hover:border-orange-500 relative z-10 text-orange-500 group-hover:bg-orange-500 group-hover:text-white py-2 px-4 rounded-md font-medium transition-all duration-300 text-sm group-hover:translate-y-8 transition duration-300"
-                            onClick={console.log(item)}>
+                            onClick={() => console.log(item)}>
                             Learn More →
                         </button>
                     </Link>
