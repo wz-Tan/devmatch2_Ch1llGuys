@@ -1,7 +1,7 @@
 // src/components/ListingPopup.jsx
 
 import { Transaction } from '@mysten/sui/transactions';
-import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from '@mysten/dapp-kit'
+import { useSignAndExecuteTransaction, useSuiClient } from '@mysten/dapp-kit'
 
 import { useState } from 'react';
 import { AUCTIONHOUSE_ID, CLOCK_ID, MARKETPLACE_ID } from '../constants';

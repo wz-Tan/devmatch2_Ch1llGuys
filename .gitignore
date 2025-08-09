@@ -27,3 +27,5 @@ frontend/node_modules/
 front-end/node_modules/
 
 devmatch2/.vite/
+
+**/.DS_Store
