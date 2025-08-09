@@ -122,16 +122,12 @@ pnpm run dev
 ---
 
 ## 📜 Hackathon Tracks
-### SUI Track
-- zkLogin Application – Seamless onboarding.
+### SUI Track 2
 
 - On-chain Marketplace – Dynamic NFTs & auctions.
 
 ### Blockchain for Good Track
 Aligns with SDG 17 goals for sustainability and accessibility. (be more specific later..)
-
-### ChatAndBuild Track
-Leverages Web3 tech for real-world relevance and originality.
 
 ## 🤝 Contributions
 Smart Contracts: Wen Zhe, Ian Hon
@@ -148,4 +144,5 @@ Slides & Pitch Deck: Yao Ren , Ang Jianming
 ## 📄 License
 
 Apache License – See LICENSE for details.
+
 
