@@ -1,4 +1,4 @@
-# QuestismOS – Ranked Gamified NFTs Marketplace with zkLogin to better bridge Web2 to Web3.
+# SuiRankup – Ranked Gamified NFTs Marketplace with zkLogin to better bridge Web2 to Web3.
 
 ## 🏆 Overview
 
@@ -146,4 +146,5 @@ Slides & Pitch Deck: Yao Ren , Ang Jianming
 
 
 ## 📄 License
+
 Apache License – See LICENSE for details.
