@@ -1,26 +1,39 @@
-import React, { useState } from 'react';
+import { useSuiClient } from '@mysten/dapp-kit';
+import React, { useEffect, useState } from 'react';
 
-interface Auction {
-  id: string;
-  nft: string;
-  minPrice: number;
-  starting: Date;
-  ending: Date;
-  highestBidID: string;
-  highestBid: {
-    amount: number;
-    bidder?: string;
-  };
-}
 
 interface BiddingPopupProps {
   isOpen: boolean;
   onClose: () => void;
-  auction: Auction;
+  auction: any;
 }
 
 const BiddingPopup: React.FC<BiddingPopupProps> = ({ isOpen, onClose, auction }) => {
-  const [price, setPrice] = useState<number>(auction.highestBid.amount);
+const suiClient=useSuiClient();
+
+const nft=auction.nft.fields;
+  let rarity=nft.rarity.variant;
+  let highestBidID=auction.highestBidID;
+  const [highestBid, setHighestBid] = useState<any>(null)
+
+  const getHighestBid=async ()=>{
+    try{
+      let response=await suiClient.getObject({id:highestBidID,options:{showContent:true,showDisplay:true}});
+      setHighestBid(response.data)
+      setPrice(Number(highestBid.amount)/1e9)
+    }
+    catch(err){
+      setHighestBid(null)
+      setPrice(Number(auction.minPrice)/1e9)
+    }
+  }
+
+  useEffect(()=>{
+    getHighestBid()
+  },[])
+
+
+  const [price, setPrice] = useState<number>(0);
 
   if (!isOpen) return null;
 
@@ -46,7 +59,7 @@ const BiddingPopup: React.FC<BiddingPopupProps> = ({ isOpen, onClose, auction })
             step="0.01"
             value={price}
             onChange={(e) =>
-              setPrice(Math.max(parseFloat(e.target.value), auction.highestBid.amount))
+              setPrice(Math.max(parseFloat(e.target.value), highestBid.amount))
             }
             placeholder="0"
             className="w-full bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-600 focus:border-orange-500 focus:outline-none"

@@ -1,12 +1,33 @@
 import React, { useState,useEffect } from 'react';
 import { useLocation,Link,useNavigate } from 'react-router-dom';
 import BiddingPopup from '../components/BiddingPopup';
+import { useSuiClient } from '@mysten/dapp-kit';
 
 const AuctionNFTDetails = () => {
+  const suiClient=useSuiClient()
   const [biddingPopUp, setBiddingPopUp] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const auction = location.state?.auction;
+  const nft=auction.nft.fields;
+  let rarity=nft.rarity.variant;
+  let highestBidID=auction.highestBidID;
+  const [highestBid, setHighestBid] = useState<any>(null)
+  let endDate=new Date(Number(auction.ending));
+
+  const getHighestBid=async ()=>{
+    try{
+      let response=await suiClient.getObject({id:highestBidID,options:{showContent:true,showDisplay:true}});
+      setHighestBid(response.data)
+    }
+    catch(err){
+      setHighestBid(null)
+    }
+  }
+
+  useEffect(()=>{
+    getHighestBid()
+  },[])
 
   if (!auction) {
     return <div className="text-white">Auction data not found</div>;
@@ -30,10 +51,9 @@ const AuctionNFTDetails = () => {
       return <div className="text-white">Auction data not found</div>;
     }
 
-  const xpPerLevel = 200;
-  const currentLevelXP = auction.nftObject.xp % xpPerLevel;
-  const xpToNextLevel = xpPerLevel - currentLevelXP;
-  const xpProgress = (currentLevelXP / xpPerLevel) * 100;
+  const currentLevelXP = Number(nft.xp);
+  const xpToNextLevel = Number(nft.xp_to_next_level);
+  const xpProgress = (currentLevelXP/ (currentLevelXP+xpToNextLevel))*100 ;
 
   const getRarityStyle = (rarity:string) => {
     const baseStyles = {
@@ -78,20 +98,20 @@ const AuctionNFTDetails = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             <div className="space-y-6">
               <div className="bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-700">
-                <div className="aspect-square bg-gradient-to-br from-gray-700 to-gray-600 flex items-center justify-center p-12">
-                  <div className="text-9xl transform hover:scale-110 transition-transform duration-300">
-                    {auction.nftObject.mediaURL}
-                  </div>
+              <div className="aspect-square bg-gradient-to-br from-gray-700 to-gray-600 flex items-center justify-center p-12">
+                <div className="text-9xl transform hover:scale-110 transition-transform duration-300 w-full h-full">
+                  <img className='w-full h-full object-cover rounded-2xl' src={nft.mediaURL} alt={nft.name}/>
                 </div>
               </div>
+            </div>
 
             
             </div>
 
             <div className="space-y-8">
               <div className="bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700">
-                <h1 className="text-4xl font-bold text-white mb-4">{auction.nftObject.name}</h1>
-                <p className="text-lg text-gray-300 leading-relaxed">{auction.nftObject.description}</p>
+                <h1 className="text-4xl font-bold text-white mb-4">{nft.name}</h1>
+                <p className="text-lg text-gray-300 leading-relaxed">{nft.description}</p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -100,32 +120,32 @@ const AuctionNFTDetails = () => {
                     
                     <span className="text-sm font-medium text-gray-400">Level</span>
                   </div>
-                  <div className="text-3xl font-bold text-white">{auction.nftObject.level}</div>
+                  <div className="text-3xl font-bold text-white">{nft.level}</div>
                 </div>
 
                 <div className="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
                   <div className="text-sm font-medium text-gray-400 mb-2">Rarity</div>
-                  <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold border ${getRarityStyle(auction.nftObject.rarity)}`}>
-                    {auction.nftObject.rarity.charAt(0).toUpperCase() + auction.nftObject.rarity.slice(1)}
+                  <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold border ${getRarityStyle(rarity)}`}>
+                    {rarity.charAt(0).toUpperCase() + rarity.slice(1)}
                   </div>
                 </div>
               </div>
               
               <div className="grid grid-cols-2 gap-4">
-                {auction.highestBid.amount ? (
+                {(highestBid) ? (
                 <div className="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
                   <div className="text-sm text-gray-400 mb-2">Current Bid</div>
-                  <div className="text-2xl font-bold text-orange-400">{auction.highestBid.amount}</div>
+                  <div className="text-2xl font-bold text-orange-400">{highestBid.amount/1e9} SUI</div>
                 </div>
                 ):(
                   <div className="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
                     <div className="text-sm text-gray-400 mb-2">Minimum Bid</div>
-                    <div className="text-2xl font-bold text-green-400">{auction.minPrice}</div>
+                    <div className="text-2xl font-bold text-green-400">{auction.minPrice/1e9} SUI</div>
                   </div>
                 )}            
                 <div className="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
                   <div className="text-sm text-gray-400 mb-2">Ending In</div>
-                  <div className="text-2xl font-bold text-red-400">{auction.ending.toLocaleDateString()}</div>
+                  <div className="text-2xl font-bold text-red-400">{(endDate).toLocaleDateString()}</div>
                 </div>
               </div>
 

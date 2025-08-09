@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import useCountdown from "../hooks/useCountdown";
 import { useCurrentAccount, useSuiClient } from "@mysten/dapp-kit";
 import { useNetworkVariable } from "../networkConfig";
+import { useEffect } from "react";
 
 const rarityBorderColors = {
     'common': "border-black hover:border-gray-400",
@@ -26,16 +27,24 @@ const rarityTextColors = {
 
 // not sure what the auction prop will be
 const AuctionCard = ({auction}:{auction:any}) => {
-  const userAccount= useCurrentAccount();
   const suiClient = useSuiClient();
-  const packageID = useNetworkVariable("PackageId");
-
   const nft=auction.nft.fields;
   //Get Highest Bid
+  let highestBidID=auction.highestBidID;
+  let highestBid:any;
 
+  const getHighestBid=async ()=>{
+    try{
+      highestBid=await suiClient.getObject({id:highestBidID,options:{showContent:true,showDisplay:true}});
+    }
+    catch(err){
+      highestBid=null
+    }
+  }
 
-
-
+  useEffect(()=>{
+    getHighestBid()
+  },[])
 
   const borderColor = rarityBorderColors[nft.rarity.variant as keyof typeof rarityBorderColors] || "border-white";
   const textColor = rarityTextColors[nft.rarity.variant as keyof typeof rarityTextColors] || "text-white";
@@ -55,7 +64,7 @@ const AuctionCard = ({auction}:{auction:any}) => {
 
             {/* Image / Emoji - Fixed aspect ratio */}
             <div className="aspect-square bg-gradient-to-br from-orange-400 to-red-600 flex auctions-center justify-center text-6xl rounded-lg mb-4">
-                <span>{nft.mediaURL || "🖼️"}</span>
+                <img src={nft.mediaURL} className="w-full h-full object-cover"/>
             </div>
             {/* Content Section - Grows to fill remaining space */}
             <div className="flex-1 flex flex-col justify-between">
@@ -73,7 +82,7 @@ const AuctionCard = ({auction}:{auction:any}) => {
                         </div>
                         <div>
                             <span>Rarity: </span>
-                            <span className={`capitalize font-medium ${textColor}`}>{nft.rarity}</span>
+                            <span className={`capitalize font-medium ${textColor}`}>{nft.rarity.variant}</span>
                         </div>
                     </div>
                 </div>
@@ -81,15 +90,15 @@ const AuctionCard = ({auction}:{auction:any}) => {
                 {/* Bid Information */}
 
                 <div className="mb-3 space-y-2">
-                    {auction.highestBid.amount > 0 ? (
+                    {(highestBid) ? (
                         <div className="flex justify-between text-xs">
                             <span className="text-gray-400">Current Bid:</span>
-                            <span className="text-white font-semibold">{auction.highestBid.amount}</span>
+                            <span className="text-white font-semibold">{highestBid.amount}</span>
                         </div>
                     ) : (
                         <div className="flex justify-between text-xs">
                             <span className="text-gray-400">Min Bid:</span>
-                            <span className="text-white font-medium">{auction.minPrice}</span>
+                            <span className="text-white font-medium">{auction.minPrice/1e9} SUI</span>
                         </div>
                     )}
                 </div>
@@ -98,16 +107,16 @@ const AuctionCard = ({auction}:{auction:any}) => {
                 <div className="text-center mb-4">
                     <div className="text-xs text-gray-400 mb-1">Ends in:</div>
                     <div className="text-orange-500 font-semibold text-sm">
-                        {formatCountdown()}
+                        {useCountdown(auction.ending)}
                     </div>
                 </div>
 
                 {/* Place Bid Button - Always at bottom */}
                 <div className="flex justify-center">
                     {/* TODO: link to nftdetails? according to our discussion */}
-                    <Link to={"/auctiondetails"} state={{ nft: auction }}>
+                    <Link to={"/auction-nft-details"} state={{ auction: auction }}>
                         <button className="border border-gray-500 group-hover:border-orange-500 relative z-10 text-orange-500 group-hover:bg-orange-500 group-hover:text-white py-2 px-4 rounded-md font-medium transition-all duration-300 text-sm group-hover:translate-y-8 transition duration-300"
-                            onClick={() => console.log(auction)}>
+                            >
                             Learn More →
                         </button>
                     </Link>
