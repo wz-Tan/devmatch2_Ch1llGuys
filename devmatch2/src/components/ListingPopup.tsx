@@ -1,13 +1,13 @@
 // src/components/ListingPopup.jsx
 import React, { useState } from 'react';
 
-const ListingPopup = ({ isOpen, onClose, userNFTs }) => {
+const ListingPopup = ({ isOpen, onClose, userNFTs }:{isOpen:boolean, onClose:any, userNFTs:any}) => {
   const [selectedNFTs, setSelectedNFTs] = useState([]);
   const [listingType, setListingType] = useState('fixed');
   const [price, setPrice] = useState(0);
   const [duration, setDuration] = useState("7");
 
-  const handleNFTSelect = (nftId) => {
+  const handleNFTSelect = (nftId:any) => {
     setSelectedNFTs(prev => {
       if (prev.includes(nftId)) {
         return prev.filter(id => id !== nftId);
@@ -39,7 +39,7 @@ const ListingPopup = ({ isOpen, onClose, userNFTs }) => {
     
     // Reset form and close popup
     setSelectedNFTs([]);
-    setPrice('');
+    setPrice(0);
     setDuration('7');
     onClose();
   };
@@ -75,7 +75,7 @@ const ListingPopup = ({ isOpen, onClose, userNFTs }) => {
               </div>
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                {userNFTs.map((nft) => (
+                {userNFTs.map((nft:any) => (
                   <div 
                     key={nft.id}
                     className={`bg-gray-800 rounded-lg overflow-hidden cursor-pointer transition-all ${

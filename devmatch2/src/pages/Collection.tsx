@@ -46,7 +46,6 @@ const Collection = () => {
     )
 
     setOwnedNFTs(userAssets)
-    console.log(userAssets)
   }
 
   //Frontend Hooks
