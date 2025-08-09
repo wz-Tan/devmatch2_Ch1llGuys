@@ -1,3 +1,4 @@
+
 // mock data
 const collections = [
     { name: 'AI Collection', items: '3.5k items' },

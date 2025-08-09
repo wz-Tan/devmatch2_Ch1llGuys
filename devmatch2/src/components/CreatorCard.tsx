@@ -34,6 +34,7 @@ const CreatorCard = (prop: CreatorProp) => {
         </div>
     )
 
+
 }
 
 export default CreatorCard;

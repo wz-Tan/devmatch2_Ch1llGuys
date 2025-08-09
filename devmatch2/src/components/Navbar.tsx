@@ -19,8 +19,11 @@ function Navbar({ onListNFTClick }: { onListNFTClick: any }) {
           <Link to="/auctions" className="text-gray-300 hover:text-white">
             Auctions
           </Link>
+          <Link to="/minting" className="text-gray-300 hover:text-white">
+            Minting
+          </Link>
           <Link to="/my-collections" className="text-gray-300 hover:text-white">
-            Owned NFT
+            My Collection
           </Link>
         </nav>
         <div className="flex gap-[12px]">

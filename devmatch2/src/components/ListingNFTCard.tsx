@@ -18,7 +18,7 @@ const rarityTextColors = {
   mythic: "text-pink-500"
 };
 
-function NFTCard({ item }:{item:any}) {
+function ListingNFTCard({ item }:{item:any}) {
   let rarity:string=item.rarity.variant;
   const borderColor = rarityBorderColors[rarity as keyof typeof rarityBorderColors] || "border-white";
   const textColor = rarityTextColors[rarity as keyof typeof rarityTextColors] || "text-white";
@@ -61,7 +61,7 @@ function NFTCard({ item }:{item:any}) {
         </div>
 
         {/* make a Route to /nftdetails later */}
-        <Link to="/nftdetails" state={{ nft: item }}>
+        <Link to="/listing-nft-details" state={{ nft: item }}>
           <div className="flex justify-center">
             <button className="relative z-10 text-orange-500 group-hover:bg-orange-500 group-hover:text-white group-hover:translate-y-8 transition duration-300 py-2 px-4 rounded-md font-medium transition-all duration-300 text-sm">
               Learn More
@@ -74,4 +74,4 @@ function NFTCard({ item }:{item:any}) {
   );
 }
 
-export default NFTCard;
+export default ListingNFTCard;

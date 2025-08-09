@@ -1,4 +1,5 @@
 // src/components/ListingPopup.jsx
+
 import { useState } from 'react';
 
 type ListingProps = {
@@ -12,11 +13,11 @@ const ListingPopup = (props: ListingProps) => {
   const [listingType, setListingType] = useState('fixed');
   const [price, setPrice] = useState(0);
   const [duration, setDuration] = useState("7");
-
   const handleNFTSelect = (nftId: string) => {
     setSelectedNFTs((prev: any) => {
       if (prev.includes(nftId)) {
         return prev.filter((id: string) => id !== nftId);
+
       } else {
         return [...prev, nftId];
       }
@@ -39,14 +40,13 @@ const ListingPopup = (props: ListingProps) => {
       price: price,
       duration: listingType === 'auction' ? duration : null
     };
-
     console.log('Listing data:', listingData);
     alert('NFTs listed successfully!');
-
     // Reset form and close popup
     setSelectedNFTs([]);
     setPrice(0);
     setDuration('7');
+
     props.onClose();
   };
 
@@ -58,8 +58,9 @@ const ListingPopup = (props: ListingProps) => {
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-700">
           <h2 className="text-2xl font-bold text-white">List Your NFTs</h2>
-          <button
-            onClick={props.onClose}
+          <button 
+            onClick={onClose}
+
             className="text-gray-400 hover:text-white text-2xl"
           >
             ×
@@ -73,7 +74,9 @@ const ListingPopup = (props: ListingProps) => {
               Select NFTs to List ({selectedNFTs.length} selected)
             </h3>
 
+
             {props.userNFTs.length === 0 ? (
+
               <div className="text-center py-12">
                 <div className="text-6xl mb-4">📦</div>
                 <p className="text-gray-400">No NFTs found in your wallet</p>
@@ -81,6 +84,7 @@ const ListingPopup = (props: ListingProps) => {
               </div>
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+
                 {props.userNFTs.map((nft: any) => (
                   <div
                     key={nft.id}
@@ -96,6 +100,7 @@ const ListingPopup = (props: ListingProps) => {
                         alt={nft.name}
                         className="object-cover w-full h-full"
                       />
+
                     </div>
                     <div className="p-3">
                       <h4 className="font-medium text-white text-sm mb-1">{nft.name}</h4>
@@ -127,6 +132,7 @@ const ListingPopup = (props: ListingProps) => {
                 <div className="flex space-x-4">
                   <button
                     onClick={() => setListingType('fixed')}
+
                     className={`px-4 py-2 rounded-lg font-medium ${listingType === 'fixed'
                       ? 'bg-orange-500 text-white'
                       : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
@@ -136,10 +142,12 @@ const ListingPopup = (props: ListingProps) => {
                   </button>
                   <button
                     onClick={() => setListingType('auction')}
+
                     className={`px-4 py-2 rounded-lg font-medium ${listingType === 'auction'
                       ? 'bg-orange-500 text-white'
                       : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                       }`}
+
                   >
                     Auction
                   </button>
@@ -155,7 +163,9 @@ const ListingPopup = (props: ListingProps) => {
                   type="number"
                   step="0.01"
                   value={price}
+
                   onChange={(e) => setPrice(Math.max(parseFloat(e.target.value), 0))}
+
                   placeholder="0.00"
                   className="w-full bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-600 focus:border-orange-500 focus:outline-none"
                 />
@@ -193,7 +203,9 @@ const ListingPopup = (props: ListingProps) => {
           </div>
           <div className="flex space-x-3">
             <button
+
               onClick={props.onClose}
+
               className="px-6 py-2 border border-gray-600 text-gray-300 rounded-lg hover:bg-gray-800"
             >
               Cancel
