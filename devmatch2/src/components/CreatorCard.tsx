@@ -1,7 +1,18 @@
-import { Star } from "lucide-react";
+import { StarIcon } from "@radix-ui/react-icons";
 
 // creator prop will have followers, verfied and name
-function CreatorCard({ creator, ranking }) {
+type CreatorProp = {
+    creator: {
+        name: string,
+        verified: boolean,
+        followers: string
+    },
+    ranking: number
+};
+
+const CreatorCard = (prop: CreatorProp) => {
+    const { creator, ranking } = prop;
+
     return (
         <div className="bg-[rgb(15,15,15)] hover:bg-[rgb(20,20,20)] transition-colors rounded-md p-4 pl-0 text-center flex">
             <div className="bg-orange-500 w-10 h-5 flex justify-center item-center">
@@ -14,7 +25,7 @@ function CreatorCard({ creator, ranking }) {
                         {creator.name}
                     </h3>
                     <div className="pt-1">
-                        {creator.verified && <Star className="w-4 h-4 text-orange-500 fill-current" />}
+                        {creator.verified && <StarIcon className="w-4 h-4 text-orange-500 fill-current" />}
                     </div>
                 </div>
 
