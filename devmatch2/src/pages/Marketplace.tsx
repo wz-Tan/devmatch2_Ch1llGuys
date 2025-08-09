@@ -5,9 +5,10 @@ import { Transaction } from '@mysten/sui/transactions';
 import { useNetworkVariable } from '../networkConfig';
 import { Button } from '@radix-ui/themes';
 import Navbar from '../components/Navbar';
-import NFTCard from '../components/NFTCard';
+import NFTCard from '../components/ListingNFTCard';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
+import ListingNFTCard from '../components/ListingNFTCard';
 
 const Marketplace = () => {
   const userAccount = useCurrentAccount();
@@ -207,7 +208,7 @@ const Marketplace = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
         {displayedNFTs.map((item:any) => (
           <div key={item.UID} className="w-full">
-            <NFTCard item={item} />
+            <ListingNFTCard item={item} />
           </div>
         ))}
       </div>
