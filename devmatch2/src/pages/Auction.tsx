@@ -142,7 +142,7 @@ const Auction = () => {
     );
 
   return (
-     <div className="bg-black text-white min-h-screen">
+     <div className="bg-gradient-to-b from-black-900 to-gray-850 text-white min-h-screen">
           <AuctionHeader />
     
           <div className="max-w-7xl mx-auto px-4 lg:px-6">
