@@ -1,17 +1,92 @@
-import { useLocation,useNavigate } from 'react-router-dom';
+import { Link, useLocation,useNavigate } from 'react-router-dom';
 import { IoIosTrendingUp } from "react-icons/io";
 import { GoArrowLeft } from "react-icons/go";
 import { FaRegClock, FaRegUser } from "react-icons/fa6";
+import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from '@mysten/dapp-kit';
+import { useNetworkVariable } from '../networkConfig';
+import { Transaction } from '@mysten/sui/transactions';
+import { MARKETPLACE_ID } from '../constants';
+import React, { useState } from 'react';
 
 
 const MarketplaceNFTDetails = () => {
+  let userAccount=useCurrentAccount();
+  const suiClient = useSuiClient();
+  const packageID = useNetworkVariable("PackageId");
+  const { mutate: signAndExecute } = useSignAndExecuteTransaction();
+
+  async function buyListing(listing_id: string) {
+      const tx = new Transaction();
+  
+      let listing = await suiClient.getObject({
+        id: listing_id,
+        options: {
+          showContent: true
+        }
+      })
+  
+      let listing_price;
+  
+      if (listing.data?.content?.dataType === "moveObject") {
+        listing_price = Number((listing as any).data?.content?.fields.price)
+      }
+  
+  
+      const fees = tx.splitCoins(tx.gas, [tx.pure.u64(listing_price!)])
+  
+      tx.moveCall({
+        arguments: [tx.object(MARKETPLACE_ID), tx.object(fees), tx.object(listing_id)],
+        target: `${packageID}::marketplace::buyListing`
+      })
+  
+      signAndExecute({ transaction: tx },
+        {
+          onSuccess: async ({ digest }) => {
+            await suiClient.waitForTransaction({
+              digest: digest,
+              options: {
+                showEffects: true,
+              },
+            });
+            //Refresh on Finish
+            window.location.reload();
+          }
+        }
+      )
+    }
+
+    async function deleteListing(listing_id: string) {
+    const tx = new Transaction();
+
+    tx.moveCall({
+      arguments: [tx.object(MARKETPLACE_ID), tx.object(listing_id)],
+      target: `${packageID}::marketplace::deleteListing`
+    });
+
+    signAndExecute({ transaction: tx },
+      {
+        onSuccess: async ({ digest }) => {
+          await suiClient.waitForTransaction({
+            digest: digest,
+            options: {
+              showEffects: true,
+            },
+          });
+           window.location.reload();
+        }
+      }
+    )
+  }
+
+
+
   const navigate = useNavigate();
   const location = useLocation();
   const listing = location.state?.listing;
-  console.log("the listing is ", listing)
-  let nft=listing.nft;
+  let nft=listing.nft.fields;
   let rarity:string=nft.rarity.variant;
   let prevOwners:any[]=nft.prevOwners;
+
   
   if (!nft) {
     return <div className="text-white">NFT data not found</div>;
@@ -68,8 +143,8 @@ const MarketplaceNFTDetails = () => {
           <div className="space-y-6">
             <div className="bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-700">
               <div className="aspect-square bg-gradient-to-br from-gray-700 to-gray-600 flex items-center justify-center p-12">
-                <div className="text-9xl transform hover:scale-110 transition-transform duration-300">
-                  {nft.mediaURL}
+                <div className="text-9xl transform hover:scale-110 transition-transform duration-300 w-full h-full">
+                  <img className='w-full h-full object-cover rounded-2xl' src={nft.mediaURL} alt={nft.name}/>
                 </div>
               </div>
             </div>
@@ -146,15 +221,15 @@ const MarketplaceNFTDetails = () => {
               </h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <div className="flex flex-col mb-[10px]">
+                  <div className="flex flex-col mb-[10px] overflow-auto">
                   <h1 className="text-gray-400">Current Owner</h1>
-                  <h1 className="font-sm text-white">{nft.owner}</h1>
+                  <h1 className="font-sm text-white max-w-full">{nft.owner}</h1>
                 </div>
                 
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-400">Price</span>
-                  <span className="font-bold text-orange-500 text-lg">{nft.price}</span>
+                  <span className="font-bold text-orange-500 text-lg">{listing.price/1e9} SUI</span>
                 </div>
             
                 {prevOwners.length > 0 && (
@@ -172,10 +247,21 @@ const MarketplaceNFTDetails = () => {
             <div className="flex gap-4">
               <button 
                 className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-4 px-6 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl"
-                onClick={()=>console.log(nft)}
+                onClick={()=>{buyListing(listing.id.id)}}
               >
                 Purchase NFT
               </button>
+            </div>
+            
+            <div className="flex mt-[-10px]">
+              {(userAccount?.address===listing.owner) ?  
+              <button 
+                className="flex-1 bg-gradient-to-r from-orange-800 to-orange-800 text-white py-4 px-6 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+                onClick={()=>{deleteListing(listing.id.id)}}
+              >
+                Remove Listing
+              </button> : null}
+              
             </div>
           </div>
         </div>

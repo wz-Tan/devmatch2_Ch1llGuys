@@ -122,60 +122,6 @@ const Marketplace = () => {
     )
   }
 
-  async function deleteListing(listing_id: string) {
-    const tx = new Transaction();
-
-    tx.moveCall({
-      arguments: [tx.object(MARKETPLACE_ID), tx.object(listing_id)],
-      target: `${packageID}::marketplace::deleteListing`
-    });
-
-    signAndExecute({ transaction: tx },
-      {
-        onSuccess: async ({ digest }) => {
-          await suiClient.waitForTransaction({
-            digest: digest,
-            options: {
-              showEffects: true,
-            },
-          });
-          retrieveMarketplace()
-        }
-      }
-    )
-  }
-
-  //Used To Feed PopUp
-  async function retrieveCollection(): Promise<object[] | null> {
-    if (!userAccount) return null
-
-    let userAssets: object[] = []
-    let res = await suiClient.getOwnedObjects({
-      owner: userAccount?.address,
-      options: {
-        showType: true
-      }
-    })
-
-    let allAssets = res.data;
-
-    //Filter The Correct NFT Type, Then Fit The Object Into Array
-    await Promise.all((allAssets.map(async (asset) => {
-      if (asset.data?.type === NFT_TYPE) {
-        let nft = await suiClient.getObject({
-          id: asset.data.objectId,
-          options: {
-            showContent: true
-          }
-        })
-        if (nft.data?.content?.dataType === "moveObject") userAssets.push(nft.data.content.fields)
-
-      }
-    }))
-    )
-
-    return userAssets
-  }
 
   //Frontend Hooks
   const [visibleItems, setVisibleItems] = useState(12);

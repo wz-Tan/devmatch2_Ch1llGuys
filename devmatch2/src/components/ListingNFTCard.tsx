@@ -20,7 +20,6 @@ const rarityTextColors = {
 
 function ListingNFTCard({ item }:{item:any}) {
   let nft=item.nft.fields;
-  console.log("NFT is", nft)
   let rarity=nft.rarity.variant;
   const borderColor = rarityBorderColors[rarity as keyof typeof rarityBorderColors] || "border-white";
   const textColor = rarityTextColors[rarity as keyof typeof rarityTextColors] || "text-white";
@@ -29,7 +28,7 @@ function ListingNFTCard({ item }:{item:any}) {
     <div className={`bg-[rgb(15,15,15)] rounded-xl hover:bg-[rgb(20,20,20)] transition-colors p-4 border ${borderColor} group h-full flex flex-col`}>
       {/* Image Container*/}
       <div className="aspect-square bg-gradient-to-br from-orange-400 to-red-600 flex items-center justify-center text-6xl rounded-lg mb-4">
-        <span>{item.mediaURL}</span>
+        <img src={nft.mediaURL} className="w-full h-full object-cover"/>
       </div>
 
       {/* Content */}
@@ -39,11 +38,11 @@ function ListingNFTCard({ item }:{item:any}) {
         <div className="mb-3">
           <div className="flex justify-between items-start gap-2 mb-2">
             <h3 className="text-white text-lg font-semibold leading-tight flex-1 min-w-0">
-              <span className="block truncate" title={nft.nftName}>
-                {nft.nftName}
+              <span className="block truncate" title={nft.name}>
+                {nft.name}
               </span>
             </h3>
-            <p className="text-orange-500 text-sm whitespace-nowrap">Level {item.level}</p>
+            <p className="text-orange-500 text-sm whitespace-nowrap">Level {nft.level}</p>
           </div>
         </div>
 
@@ -51,19 +50,19 @@ function ListingNFTCard({ item }:{item:any}) {
           <div className="flex flex-col min-w-0 flex-1">
             <p className="text-gray-400 text-xs uppercase tracking-wide">Rarity</p>
             <p className={`${textColor} text-sm font-medium capitalize truncate`}>
-              {item.rarity}
+              {rarity}
             </p>
           </div>
           <div className="flex flex-col min-w-0 flex-1 items-end">
             <p className="text-gray-400 text-xs uppercase tracking-wide">Price</p>
-            <p className="text-white font-bold text-sm truncate" title={item.price}>
+            <p className="text-white font-bold text-sm truncate" title={nft.price}>
               {item.price/1e9} SUI
             </p>
           </div>
         </div>
 
         {/* make a Route to /nftdetails later */}
-        <Link to="/listing-nft-details" state={{ nft: item }}>
+        <Link to="/listing-nft-details" state={{ listing: item }}>
           <div className="flex justify-center">
             <button className="relative z-10 text-orange-500 group-hover:bg-orange-500 group-hover:text-white group-hover:translate-y-8 transition duration-300 py-2 px-4 rounded-md font-medium transition-all duration-300 text-sm">
               Learn More
