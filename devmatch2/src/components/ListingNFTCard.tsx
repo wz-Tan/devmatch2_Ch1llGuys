@@ -19,7 +19,8 @@ const rarityTextColors = {
 };
 
 function ListingNFTCard({ item }:{item:any}) {
-  let rarity:string=item.rarity.variant;
+  let nft=item.nft;
+  let rarity:string=nft.rarity.variant;
   const borderColor = rarityBorderColors[rarity as keyof typeof rarityBorderColors] || "border-white";
   const textColor = rarityTextColors[rarity as keyof typeof rarityTextColors] || "text-white";
 
@@ -27,7 +28,7 @@ function ListingNFTCard({ item }:{item:any}) {
     <div className={`bg-[rgb(15,15,15)] rounded-xl hover:bg-[rgb(20,20,20)] transition-colors p-4 border ${borderColor} group h-full flex flex-col`}>
       {/* Image Container*/}
       <div className="aspect-square bg-gradient-to-br from-orange-400 to-red-600 flex items-center justify-center text-6xl rounded-lg mb-4">
-        <span>{item.asset_url}</span>
+        <span>{item.mediaURL}</span>
       </div>
 
       {/* Content */}
@@ -37,8 +38,8 @@ function ListingNFTCard({ item }:{item:any}) {
         <div className="mb-3">
           <div className="flex justify-between items-start gap-2 mb-2">
             <h3 className="text-white text-lg font-semibold leading-tight flex-1 min-w-0">
-              <span className="block truncate" title={item.nftName}>
-                {item.nftName}
+              <span className="block truncate" title={nft.nftName}>
+                {nft.nftName}
               </span>
             </h3>
             <p className="text-orange-500 text-sm whitespace-nowrap">Level {item.level}</p>

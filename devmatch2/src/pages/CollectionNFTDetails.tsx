@@ -12,6 +12,7 @@ const CollectionNFTDetails = () => {
   const nft = location.state?.collectionNFT;
   let rarity:string=nft.rarity.variant;
   let prevOwners:any[]=nft.prevOwners;
+    console.log("NFT IS",nft)
   
   if (!nft) {
     return <div className="text-white">NFT data not found</div>;
@@ -68,8 +69,9 @@ const CollectionNFTDetails = () => {
           <div className="space-y-6">
             <div className="bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-700">
               <div className="aspect-square bg-gradient-to-br from-gray-700 to-gray-600 flex items-center justify-center p-12">
-                <div className="text-9xl transform hover:scale-110 transition-transform duration-300">
-                  {nft.mediaURL}
+                <div className="text-9xl transform hover:scale-110 transition-transform duration-300 w-full h-full">
+                  
+                  <img className='w-full h-full object-cover rounded-2xl' src={nft.mediaURL} alt={nft.name}/>
                 </div>
               </div>
             </div>
