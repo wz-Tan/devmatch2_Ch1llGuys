@@ -41,6 +41,7 @@ Aligned with **United Nations’ Sustainable Development Goals (SDGs)**, Questis
 
 
 ### Frontend (React + TypeScript)
+```text
 devmatch2/src/
   ├── components/
   │ ├── AuctionPopUp.tsx # Auction interaction UI
@@ -61,9 +62,11 @@ devmatch2/src/
   ├── OwnedObjects.tsx # Display user-owned NFTs
   ├── WalletStatus.tsx # Wallet connection & status
   └── vite-env.d.ts
+  ```
 
 
 ### Smart Contracts (Move)
+```text
 marketplace_contract/
 ├── sources/
 │ ├── bidding.move # Auction and bidding logic
@@ -72,7 +75,7 @@ marketplace_contract/
 ├── tests/
 │ └── marketplace_contract_tests.move
 └── Move.toml # Sui Move package configuration
-
+```
 
 ---
 
