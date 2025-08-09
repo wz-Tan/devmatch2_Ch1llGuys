@@ -21,6 +21,10 @@ const rarityTextColors = {
 
 // not sure what the item prop will be
 function AuctionCard({ item }) {
+    // Add safety checks
+    if (!item.nftObject) {
+        return <div>NFT data not available</div>;
+    }
     const borderColor = rarityBorderColors[item.nftObject.rarity] || "border-white";
     const textColor = rarityTextColors[item.nftObject.rarity] || "text-white";
     const { days, hours, minutes, seconds } = useCountdown(item.ending);
