@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
-
-const ListingPopup = ({ isOpen, onClose, startAuction, userNFTs }: { isOpen: boolean, onClose: any, startAuction:any, userNFTs: any[] }) => {
+const ListingPopup = ({ isOpen, onClose, startAuction, userNFTs }: { isOpen: boolean, onClose: any, startAuction: any, userNFTs: any[] }) => {
 
   const [selectedNFT, setSelectedNFT] = useState<any>("");
   const [price, setPrice] = useState('');
@@ -24,12 +23,12 @@ const ListingPopup = ({ isOpen, onClose, startAuction, userNFTs }: { isOpen: boo
     const listingData = {
       nftId: selectedNFT,
       //Round Down to Smallest Unit of Billion
-      price: Math.floor(parseFloat(price)*1e9),
-      duration: parseInt(duration)*86400000
+      price: Math.floor(parseFloat(price) * 1e9),
+      duration: parseInt(duration) * 86400000
     };
 
 
-    startAuction( listingData.price, listingData.duration, listingData.nftId.id);
+    startAuction(listingData.price, listingData.duration, listingData.nftId.id);
 
     // Reset form and close popup
     setSelectedNFT("");
@@ -73,8 +72,8 @@ const ListingPopup = ({ isOpen, onClose, startAuction, userNFTs }: { isOpen: boo
                   <div
                     key={key}
                     className={`bg-gray-800 rounded-lg overflow-hidden cursor-pointer transition-all ${selectedNFT === nft.id
-                        ? 'border border-orange-500 rounded-md bg-gray-700'
-                        : 'hover:bg-gray-700'
+                      ? 'border border-orange-500 rounded-md bg-gray-700'
+                      : 'hover:bg-gray-700'
                       }`}
                     onClick={() => handleNFTSelect(nft.id)}
                   >
@@ -103,7 +102,7 @@ const ListingPopup = ({ isOpen, onClose, startAuction, userNFTs }: { isOpen: boo
           </div>
 
           {/* Listing Configuration */}
-          {selectedNFT!="" ? 
+          {selectedNFT != "" ?
             <div className="px-6 pb-6 border-t border-gray-700 pt-6 flex flex-col gap-[15px]">
               <h3 className="text-lg font-semibold text-white mb-4">Listing Details - Users Need To Pay 0.1 SUI as Deposit (Taxed 5% If No One Bids)</h3>
               {/* Price */}
@@ -117,63 +116,63 @@ const ListingPopup = ({ isOpen, onClose, startAuction, userNFTs }: { isOpen: boo
                   value={price}
                   onChange={
                     (e) => {
-                      if (parseFloat(e.target.value)<0){
+                      if (parseFloat(e.target.value) < 0) {
                         setPrice("0")
                       }
-                      else{
+                      else {
                         setPrice(e.target.value)
                       }
-                      
+
                     }
                   }
                   placeholder="0.00"
                   className="w-full bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-600 focus:border-orange-500 focus:outline-none"
                 />
               </div>
-              
+
 
               {/* Auction Duration */}
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Auction Duration
-                  </label>
-                  <select
-                    value={duration}
-                    onChange={(e) => setDuration(e.target.value)}
-                    className="w-full bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-600 focus:border-orange-500 focus:outline-none"
-                  >
-                    <option value="1">1 Day</option>
-                    <option value="3">3 Days</option>
-                    <option value="7">7 Days</option>
-                    <option value="14">14 Days</option>
-                    <option value="30">30 Days</option>
-                  </select>
-                </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Auction Duration
+                </label>
+                <select
+                  value={duration}
+                  onChange={(e) => setDuration(e.target.value)}
+                  className="w-full bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-600 focus:border-orange-500 focus:outline-none"
+                >
+                  <option value="1">1 Day</option>
+                  <option value="3">3 Days</option>
+                  <option value="7">7 Days</option>
+                  <option value="14">14 Days</option>
+                  <option value="30">30 Days</option>
+                </select>
+              </div>
             </div>
-         : null
-                }
+            : null
+          }
 
-        {/* Footer */}
-        <div className="p-6 border-t border-gray-700 flex justify-between items-center">
+          {/* Footer */}
+          <div className="p-6 border-t border-gray-700 flex justify-between items-center">
 
-          <div className="flex space-x-3">
-            <button
-              onClick={onClose}
-              className="px-6 py-2 border border-gray-600 text-gray-300 rounded-lg hover:bg-gray-800"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={()=>{handleSubmitListing()}}
-              disabled={selectedNFT === ""}
-              className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:bg-gray-600 disabled:cursor-not-allowed"
-            >
-              List NFT
-            </button>
+            <div className="flex space-x-3">
+              <button
+                onClick={onClose}
+                className="px-6 py-2 border border-gray-600 text-gray-300 rounded-lg hover:bg-gray-800"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => { handleSubmitListing() }}
+                disabled={selectedNFT === ""}
+                className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:bg-gray-600 disabled:cursor-not-allowed"
+              >
+                List NFT
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
     </div>
   );
 };

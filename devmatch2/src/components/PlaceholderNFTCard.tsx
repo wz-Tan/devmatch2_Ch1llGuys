@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 
 const rarityBorderColors = {
@@ -19,7 +18,7 @@ const rarityTextColors = {
   mythic: "text-pink-500"
 };
 
-function PlaceholderNFTCard({ item }:{item:any}) {
+function PlaceholderNFTCard({ item }: { item: any }) {
   const borderColor = rarityBorderColors[item.rarity as keyof typeof rarityBorderColors] || "border-white";
   const textColor = rarityTextColors[item.rarity as keyof typeof rarityTextColors] || "text-white";
 

@@ -1,10 +1,8 @@
-import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from '@mysten/dapp-kit';
+import { useSignAndExecuteTransaction, useSuiClient } from '@mysten/dapp-kit';
 import { Transaction } from '@mysten/sui/transactions';
 import React, { useEffect, useState } from 'react';
 import { AUCTIONHOUSE_ID, CLOCK_ID } from '../constants';
 import { useNetworkVariable } from '../networkConfig';
-
-
 
 interface BiddingPopupProps {
     isOpen: boolean;
@@ -13,7 +11,8 @@ interface BiddingPopupProps {
 }
 
 const BiddingPopup: React.FC<BiddingPopupProps> = ({ isOpen, onClose, auction }) => {
-    const userAccount = useCurrentAccount();
+    // TODO : check if this is ok
+    // const userAccount = useCurrentAccount();
     const suiClient = useSuiClient();
     const packageID = useNetworkVariable("PackageId");
     const { mutate: signAndExecute } = useSignAndExecuteTransaction();
@@ -46,8 +45,9 @@ const BiddingPopup: React.FC<BiddingPopupProps> = ({ isOpen, onClose, auction })
         )
     }
 
-    const nft = auction.nft.fields;
-    let rarity = nft.rarity.variant;
+    // TODO : check if this is ok
+    // const nft = auction.nft.fields;
+    // let rarity = nft.rarity.variant;
     let highestBidID = auction.highestBidID;
     const [highestBid, setHighestBid] = useState<any>(null)
     const [minValue, setMinValue] = useState<number>(0.00)

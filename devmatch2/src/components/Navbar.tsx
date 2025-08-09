@@ -1,5 +1,4 @@
 import { ConnectButton } from "@mysten/dapp-kit";
-import { useState } from "react";
 import { Link } from "react-router-dom";
 
 function Navbar({ onListNFTClick }: { onListNFTClick: any }) {
@@ -33,7 +32,7 @@ function Navbar({ onListNFTClick }: { onListNFTClick: any }) {
           >
             Listing
           </button>
-          <ConnectButton/>
+          <ConnectButton />
 
         </div>
 

@@ -1,7 +1,4 @@
-import React from "react";
-import NFTCard from "./ListingNFTCard";
 import { Link } from "react-router-dom";
-import ListingNFTCard from "./ListingNFTCard";
 import PlaceholderNFTCard from "./PlaceholderNFTCard";
 
 // Type for a single NFT
