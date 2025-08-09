@@ -2,24 +2,23 @@
 import React, { useState } from 'react';
 
 const ListingPopup = ({ isOpen, onClose, userNFTs }) => {
-  const [selectedNFTs, setSelectedNFTs] = useState([]);
+  const [selectedNFT, setselectedNFT] = useState('');
   const [listingType, setListingType] = useState('fixed');
   const [price, setPrice] = useState(0);
   const [duration, setDuration] = useState("7");
 
   const handleNFTSelect = (nftId) => {
-    setSelectedNFTs(prev => {
-      if (prev.includes(nftId)) {
-        return prev.filter(id => id !== nftId);
-      } else {
-        return [...prev, nftId];
-      }
-    });
+    if (nftId === selectedNFT){
+      setselectedNFT('');
+    } else{
+      setselectedNFT(nftId);
+    }
+    
   };
 
   const handleSubmitListing = () => {
-    if (selectedNFTs.length === 0) {
-      alert('Please select at least one NFT');
+    if (selectedNFT.length === 0) {
+      alert('Please select at one NFT');
       return;
     }
     if (!price) {
@@ -28,7 +27,7 @@ const ListingPopup = ({ isOpen, onClose, userNFTs }) => {
     }
 
     const listingData = {
-      nftIds: selectedNFTs,
+      nftIds: selectedNFT,
       type: listingType,
       price: price,
       duration: listingType === 'auction' ? duration : null
@@ -38,7 +37,7 @@ const ListingPopup = ({ isOpen, onClose, userNFTs }) => {
     alert('NFTs listed successfully!');
     
     // Reset form and close popup
-    setSelectedNFTs([]);
+    setselectedNFT('');
     setPrice('');
     setDuration('7');
     onClose();
@@ -64,7 +63,7 @@ const ListingPopup = ({ isOpen, onClose, userNFTs }) => {
           {/* NFT Selection Grid */}
           <div className="p-6">
             <h3 className="text-lg font-semibold text-white mb-4">
-              Select NFTs to List ({selectedNFTs.length} selected)
+              Select NFTs to List 
             </h3>
             
             {userNFTs.length === 0 ? (
@@ -79,7 +78,7 @@ const ListingPopup = ({ isOpen, onClose, userNFTs }) => {
                   <div 
                     key={nft.id}
                     className={`bg-gray-800 rounded-lg overflow-hidden cursor-pointer transition-all ${
-                      selectedNFTs.includes(nft.id) 
+                      nft.id == selectedNFT
                         ? 'border border-orange-500 rounded-md bg-gray-700' 
                         : 'hover:bg-gray-700'
                     }`}
@@ -95,7 +94,7 @@ const ListingPopup = ({ isOpen, onClose, userNFTs }) => {
                     <div className="p-3">
                       <h4 className="font-medium text-white text-sm mb-1">{nft.name}</h4>
                       <p className="text-gray-400 text-xs">{nft.collection}</p>
-                      {selectedNFTs.includes(nft.id) && (
+                      {(selectedNFT === nft.id) && (
                         <div className="mt-2">
                           <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full">
                             Selected ✓
@@ -110,7 +109,7 @@ const ListingPopup = ({ isOpen, onClose, userNFTs }) => {
           </div>
 
           {/* Listing Configuration */}
-          {selectedNFTs.length > 0 && (
+          {selectedNFT && (
             <div className="px-6 pb-6 border-t border-gray-700 pt-6">
               <h3 className="text-lg font-semibold text-white mb-4">Listing Details</h3>
               
@@ -184,8 +183,8 @@ const ListingPopup = ({ isOpen, onClose, userNFTs }) => {
         {/* Footer */}
         <div className="p-6 border-t border-gray-700 flex justify-between items-center">
           <div className="text-gray-400">
-            {selectedNFTs.length > 0 && (
-              <span>{selectedNFTs.length} NFT{selectedNFTs.length > 1 ? 's' : ''} selected</span>
+            {selectedNFT.length > 0 && (
+              <span>{selectedNFT.length} NFT selected</span>
             )}
           </div>
           <div className="flex space-x-3">
@@ -197,10 +196,10 @@ const ListingPopup = ({ isOpen, onClose, userNFTs }) => {
             </button>
             <button
               onClick={handleSubmitListing}
-              disabled={selectedNFTs.length === 0}
+              disabled={selectedNFT.length === 0}
               className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:bg-gray-600 disabled:cursor-not-allowed"
             >
-              List {selectedNFTs.length > 0 ? `${selectedNFTs.length} NFT${selectedNFTs.length > 1 ? 's' : ''}` : 'NFTs'}
+              List {selectedNFT.length > 0 ? `${selectedNFT.length} NFT : ''}` : 'NFTs'}
             </button>
           </div>
         </div>
