@@ -1,15 +1,15 @@
-import React from 'react';
-import { useLocation,Link,useNavigate } from 'react-router-dom';
+import { useLocation,useNavigate } from 'react-router-dom';
 import { IoIosTrendingUp } from "react-icons/io";
 import { GoArrowLeft } from "react-icons/go";
 import { FaRegClock, FaRegUser } from "react-icons/fa6";
-import { CiUser } from "react-icons/ci";
 
 
 const MarketplaceNFTDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const nft = location.state?.listingNFT;
+  const listing = location.state?.listing;
+  console.log("the listing is ", listing)
+  let nft=listing.nft;
   let rarity:string=nft.rarity.variant;
   let prevOwners:any[]=nft.prevOwners;
   

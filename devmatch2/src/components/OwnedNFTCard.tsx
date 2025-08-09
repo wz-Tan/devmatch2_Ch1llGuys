@@ -28,7 +28,7 @@ function OwnedNFTCard({ item }:{item:any}) {
     <div className={`bg-[rgb(15,15,15)] rounded-xl hover:bg-[rgb(20,20,20)] transition-colors p-4 border ${borderColor} group h-full flex flex-col`}>
       {/* Image Container */}
       <div className="aspect-square bg-gradient-to-br from-orange-400 to-red-600 flex items-center justify-center text-6xl rounded-lg mb-4">
-        <span>{item.asset_url}</span>
+        <img src={item.mediaURL} className="w-full h-full object-cover"/>
       </div>
 
 

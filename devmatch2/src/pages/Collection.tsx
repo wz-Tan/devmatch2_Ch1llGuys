@@ -66,7 +66,7 @@ const Collection = () => {
             </img>
           </div>
           <h3 className="text-4xl md:text-5xl font-bold mb-2">My NFT Collection</h3>
-          <p className="text-orange-500 text-lg font-medium mb-4">@username</p>
+          <p className="text-orange-500 text-lg font-medium mb-4">{userAccount?.address}</p>
           <p className="text-gray-400 text-center">
             Welcome to your personal NFT collection. Manage, view, and track your digital assets.
           </p>
@@ -88,8 +88,8 @@ const Collection = () => {
   
     const NFTGrid = ({ displayedNFTs }:{displayedNFTs: any}) => (
       <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12'>
-        {displayedNFTs.map((item:any) => (
-          <div key={item} className="w-full">
+        {displayedNFTs.map((item:any,key:number) => (
+          <div key={key} className="w-full">
             <OwnedNFTCard item={item} />
           </div>
         ))}
