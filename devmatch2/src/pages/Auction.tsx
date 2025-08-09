@@ -1,18 +1,12 @@
-import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from '@mysten/dapp-kit'
-import React, { useEffect, useState } from 'react'
-import { useNetworkVariable } from '../networkConfig';
-import { Transaction } from '@mysten/sui/transactions';
-import { AUCTIONHOUSE_ID, CLOCK_ID, NFT_TYPE } from '../constants';
+import { useSignAndExecuteTransaction, useSuiClient } from '@mysten/dapp-kit'
+import { useEffect, useState } from 'react'
+import { AUCTIONHOUSE_ID } from '../constants';
 import AuctionCard from '../components/AuctionCard';
 import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
 
 const Auction = () => {
-  const userAccount= useCurrentAccount();
   const suiClient = useSuiClient();
-  const packageID = useNetworkVariable("PackageId");
-
-  const {mutate: signAndExecute } = useSignAndExecuteTransaction();
   const [auctions, setAuctions] = useState<any []>([]);
 
   useEffect(() => { retrieveAuctionHouse() }, [])
@@ -50,35 +44,9 @@ const Auction = () => {
     }))
 
     setAuctions(actualListings);
+    console.log("Auction House",auctionHouse)
   }
 
-  async function createBidding(auction_id:string, bidding:number){
-    const tx= new Transaction();
-
-    bidding=Math.floor(bidding*1e9);
-
-    let biddingCoin=tx.splitCoins(tx.gas,[tx.pure.u64(bidding)])
-
-    tx.moveCall({
-      arguments: [tx.object(AUCTIONHOUSE_ID),tx.pure.id(auction_id), tx.object(biddingCoin), tx.object(CLOCK_ID)],
-      target: `${packageID}::bidding::createBidding`
-    })
-
-    signAndExecute({ transaction: tx },
-      {
-        onSuccess: async ({ digest }) => {
-          await suiClient.waitForTransaction({
-            digest: digest,
-            options: {
-              showEffects: true,
-            },
-          });
-          //Refresh on Finish
-          retrieveAuctionHouse()
-        }
-      }
-    )
-  }
 
     //Frontend Hooks
   const [visibleItems, setVisibleItems] = useState(12);

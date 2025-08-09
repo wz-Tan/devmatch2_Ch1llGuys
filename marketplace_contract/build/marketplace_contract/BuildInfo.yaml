@@ -7,7 +7,7 @@ compiled_package_info:
     std: "0000000000000000000000000000000000000000000000000000000000000001"
     sui: "0000000000000000000000000000000000000000000000000000000000000002"
     sui_system: "0000000000000000000000000000000000000000000000000000000000000003"
-  source_digest: C4C2649CF506862DB14EEEF6A0EFB7571658C325F57EBA201A892E007CCCA39A
+  source_digest: 2D525A37092A85CC879857C6A80777BA546BAC98AEA84D7EFE3BB4EF87A436C2
   build_flags:
     dev_mode: false
     test_mode: false
@@ -15,7 +15,7 @@ compiled_package_info:
     save_disassembly: false
     install_dir: ~
     force_recompilation: false
-    lock_file: "./Move.lock"
+    lock_file: ".\\Move.lock"
     fetch_deps_only: false
     skip_fetch_latest_git_deps: false
     default_flavor: sui
@@ -28,14 +28,13 @@ compiled_package_info:
     lint_flag:
       no_lint: false
       lint: false
-    modes: []
     implicit_dependencies:
       Bridge:
         Internal:
           kind:
             Git:
               git_url: "https://github.com/MystenLabs/sui.git"
-              git_rev: b448b1d971bd6c1aac8ef4eee4305943806d5d5b
+              git_rev: af5297b292c3
               subdir: crates/sui-framework/packages/bridge
           subst: ~
           digest: ~
@@ -45,7 +44,7 @@ compiled_package_info:
           kind:
             Git:
               git_url: "https://github.com/MystenLabs/sui.git"
-              git_rev: b448b1d971bd6c1aac8ef4eee4305943806d5d5b
+              git_rev: af5297b292c3
               subdir: crates/sui-framework/packages/move-stdlib
           subst: ~
           digest: ~
@@ -55,7 +54,7 @@ compiled_package_info:
           kind:
             Git:
               git_url: "https://github.com/MystenLabs/sui.git"
-              git_rev: b448b1d971bd6c1aac8ef4eee4305943806d5d5b
+              git_rev: af5297b292c3
               subdir: crates/sui-framework/packages/sui-framework
           subst: ~
           digest: ~
@@ -65,7 +64,7 @@ compiled_package_info:
           kind:
             Git:
               git_url: "https://github.com/MystenLabs/sui.git"
-              git_rev: b448b1d971bd6c1aac8ef4eee4305943806d5d5b
+              git_rev: af5297b292c3
               subdir: crates/sui-framework/packages/sui-system
           subst: ~
           digest: ~

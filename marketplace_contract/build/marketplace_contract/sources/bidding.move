@@ -201,7 +201,7 @@ public entry fun createBidding(
     
 
     // update auction.highest_bid
-    let previousHighestID:Option<ID> =option::swap_or_fill(&mut auction.highestBidID,uid_to_inner(&new_bid.id));
+    let mut previousHighestID:Option<ID> =option::swap_or_fill(&mut auction.highestBidID,uid_to_inner(&new_bid.id));
 
     // add bid amounts
     auction.bidIDs.push_back(uid_to_inner(&new_bid.id));
@@ -209,7 +209,7 @@ public entry fun createBidding(
 
     // transfer back to previous owner
     if (option::is_some(&previousHighestID)){
-        let highest_bid: &mut Bid = auction.bidBag.borrow_mut(previousHighestID);
+        let highest_bid: &mut Bid = auction.bidBag.borrow_mut(option::extract(&mut previousHighestID));
         let coin: Coin<SUI> = highest_bid.balance.withdraw_all().into_coin(ctx);
         transfer::public_transfer(coin, highest_bid.owner);
     };

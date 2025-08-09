@@ -1,11 +1,8 @@
 import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from '@mysten/dapp-kit';
-import React, { useEffect, useState } from 'react'
-import { CLOCK_ID, MARKETPLACE_ID, NFT_TYPE } from '../constants';
+import { useEffect, useState } from 'react'
+import { CLOCK_ID, MARKETPLACE_ID } from '../constants';
 import { Transaction } from '@mysten/sui/transactions';
 import { useNetworkVariable } from '../networkConfig';
-import { Button } from '@radix-ui/themes';
-import Navbar from '../components/Navbar';
-import NFTCard from '../components/ListingNFTCard';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
 import ListingNFTCard from '../components/ListingNFTCard';
@@ -54,6 +51,7 @@ const { mutate: signAndExecute } = useSignAndExecuteTransaction();
     }))
 
     setMarketplaceItems(actualListings);
+    console.log("Marketplace",marketplace)
   }
 
   //Create A New Listing

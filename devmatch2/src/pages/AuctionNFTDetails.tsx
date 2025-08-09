@@ -9,6 +9,7 @@ const AuctionNFTDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const auction = location.state?.auction;
+  console.log("Auction",auction)
   const nft=auction.nft.fields;
   let rarity=nft.rarity.variant;
   let highestBidID=auction.highestBidID;
@@ -19,7 +20,7 @@ const AuctionNFTDetails = () => {
     try{
       let response=await suiClient.getObject({id:highestBidID,options:{showContent:true,showDisplay:true}});
       setHighestBid((response as any).data?.content.fields)
-      console.log(highestBid)
+      console.log("Highest Bid",highestBid)
     }
     catch(err){
       setHighestBid(null)

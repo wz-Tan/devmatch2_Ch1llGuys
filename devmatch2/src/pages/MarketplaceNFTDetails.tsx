@@ -86,6 +86,7 @@ const MarketplaceNFTDetails = () => {
   let nft=listing.nft.fields;
   let rarity:string=nft.rarity.variant;
   let prevOwners:any[]=nft.prevOwners;
+  console.log("Listing Info",listing)
 
   
   if (!nft) {
