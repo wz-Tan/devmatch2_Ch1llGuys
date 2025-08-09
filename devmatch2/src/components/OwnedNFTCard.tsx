@@ -21,8 +21,8 @@ const rarityTextColors = {
 
 function OwnedNFTCard({ item }:{item:any}) {
   let rarity:string=item.rarity.variant;
-  const borderColor = rarityBorderColors[rarity] || "border-white";
-  const textColor = rarityTextColors[rarity] || "text-white";
+  const borderColor = rarityBorderColors[rarity as keyof typeof rarityBorderColors] || "border-white";
+  const textColor = rarityTextColors[rarity as keyof typeof rarityTextColors] || "text-white";
 
   return (
     <div className={`bg-[rgb(15,15,15)] rounded-xl hover:bg-[rgb(20,20,20)] transition-colors p-4 border ${borderColor} group h-full flex flex-col`}>
