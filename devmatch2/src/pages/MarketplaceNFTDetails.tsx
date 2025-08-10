@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { IoIosTrendingUp } from "react-icons/io";
 import { GoArrowLeft } from "react-icons/go";
 import { FaRegClock, FaRegUser } from "react-icons/fa6";
@@ -6,7 +6,6 @@ import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from '@
 import { useNetworkVariable } from '../networkConfig';
 import { Transaction } from '@mysten/sui/transactions';
 import { MARKETPLACE_ID } from '../constants';
-import React, { useState } from 'react';
 
 
 const MarketplaceNFTDetails = () => {

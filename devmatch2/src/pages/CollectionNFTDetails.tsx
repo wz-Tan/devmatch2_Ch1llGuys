@@ -1,29 +1,27 @@
-import React from 'react';
-import { useLocation,Link,useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { IoIosTrendingUp } from "react-icons/io";
 import { GoArrowLeft } from "react-icons/go";
 import { FaRegClock, FaRegUser } from "react-icons/fa6";
-import { CiUser } from "react-icons/ci";
 
 
 const CollectionNFTDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const nft = location.state?.collectionNFT;
-  let rarity:string=nft.rarity.variant;
-  let prevOwners:any[]=nft.prevOwners;
-    console.log("NFT IS",nft)
-  
+  let rarity: string = nft.rarity.variant;
+  let prevOwners: any[] = nft.prevOwners;
+  console.log("NFT IS", nft)
+
   if (!nft) {
     return <div className="text-white">NFT data not found</div>;
   }
 
   const currentLevelXP = Number(nft.xp);
   const xpToNextLevel = Number(nft.xp_to_next_level);
-  const xpProgress = (currentLevelXP/ (currentLevelXP+xpToNextLevel))*100 ;
+  const xpProgress = (currentLevelXP / (currentLevelXP + xpToNextLevel)) * 100;
 
   // Rarity colors and styles for dark theme
-  const getRarityStyle = (rarity:any) => {  
+  const getRarityStyle = (rarity: any) => {
     const baseStyles = {
       common: 'bg-gray-700 text-gray-200',
       uncommon: 'bg-green-900 text-green-200',
@@ -32,7 +30,7 @@ const CollectionNFTDetails = () => {
       legendary: 'bg-orange-900 text-orange-200',
       mythic: 'bg-pink-900 text-pink-200'
     };
-  
+
     const borderStyles = {
       common: 'border-black hover:border-gray-400',
       uncommon: 'border-black hover:border-green-500',
@@ -41,10 +39,10 @@ const CollectionNFTDetails = () => {
       legendary: 'border-black hover:border-yellow-400',
       mythic: 'border-black hover:border-pink-500'
     };
-  
+
     const base = baseStyles[rarity as keyof typeof baseStyles] || 'bg-gray-700 text-gray-200';
     const border = borderStyles[rarity as keyof typeof borderStyles] || 'border-black hover:border-gray-400';
-  
+
     return `${base} ${border}`;
   };
 
@@ -53,11 +51,11 @@ const CollectionNFTDetails = () => {
       {/* Header */}
       <div className="bg-gray-800 shadow-lg border-b border-gray-700">
         <div className="max-w-6xl mx-auto px-6 py-4">
-          <button 
+          <button
             className="flex items-center text-gray-300 hover:text-orange-500 transition-colors"
-            onClick={()=>navigate(-1)}>
-              <GoArrowLeft className="w-5 h-5 mr-2"/> 
-              Go Back
+            onClick={() => navigate(-1)}>
+            <GoArrowLeft className="w-5 h-5 mr-2" />
+            Go Back
           </button>
         </div>
       </div>
@@ -70,8 +68,8 @@ const CollectionNFTDetails = () => {
             <div className="bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-700">
               <div className="aspect-square bg-gradient-to-br from-gray-700 to-gray-600 flex items-center justify-center p-12">
                 <div className="text-9xl transform hover:scale-110 transition-transform duration-300 w-full h-full">
-                  
-                  <img className='w-full h-full object-cover rounded-2xl' src={nft.mediaURL} alt={nft.name}/>
+
+                  <img className='w-full h-full object-cover rounded-2xl' src={nft.mediaURL} alt={nft.name} />
                 </div>
               </div>
             </div>
@@ -127,13 +125,13 @@ const CollectionNFTDetails = () => {
                   <span className="font-medium text-white">Experience Points</span>
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-white">Current XP: {currentLevelXP}</span>
                   <span className="text-white">Next Level: {xpToNextLevel} XP</span>
                 </div>
-                
+
                 <div className="text-center text-sm text-gray-400">
                   {Math.round(xpProgress)}% to Level {Number(nft.level) + 1}
                 </div>
@@ -151,12 +149,12 @@ const CollectionNFTDetails = () => {
                   <h1 className="text-gray-400">Current Owner</h1>
                   <h1 className="font-sm text-white">{nft.owner}</h1>
                 </div>
-                
+
                 {prevOwners.length > 0 && (
                   <div className="pt-2 border-t flex flex-col border-gray-700">
                     <h1 className="text-sm text-gray-400">Previous Owners: </h1>
                     <h1 className="text-sm text-gray-300">
-                      {prevOwners.map((owner)=>(<h1 className="font-sm text-white">{owner}</h1>))}
+                      {prevOwners.map((owner) => (<h1 className="font-sm text-white">{owner}</h1>))}
                     </h1>
                   </div>
                 )}

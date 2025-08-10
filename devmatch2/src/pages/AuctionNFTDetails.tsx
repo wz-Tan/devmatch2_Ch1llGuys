@@ -1,63 +1,59 @@
-import React, { useState,useEffect } from 'react';
-import { useLocation,Link,useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import BiddingPopup from '../components/BiddingPopup';
 import { useSuiClient } from '@mysten/dapp-kit';
 
 const AuctionNFTDetails = () => {
-  const suiClient=useSuiClient()
+  const suiClient = useSuiClient()
   const [biddingPopUp, setBiddingPopUp] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const auction = location.state?.auction;
-  console.log("Auction",auction)
-  const nft=auction.nft.fields;
-  let rarity=nft.rarity.variant;
-  let highestBidID=auction.highestBidID;
+  console.log("Auction", auction)
+  const nft = auction.nft.fields;
+  let rarity = nft.rarity.variant;
+  let highestBidID = auction.highestBidID;
   const [highestBid, setHighestBid] = useState<any>(null)
-  let endDate=new Date(Number(auction.ending));
+  let endDate = new Date(Number(auction.ending));
 
-  const getHighestBid=async ()=>{
-    try{
-      let response=await suiClient.getObject({id:highestBidID,options:{showContent:true,showDisplay:true}});
+  const getHighestBid = async () => {
+    try {
+      let response = await suiClient.getObject({ id: highestBidID, options: { showContent: true, showDisplay: true } });
       setHighestBid((response as any).data?.content.fields)
-      console.log("Highest Bid",highestBid)
+      console.log("Highest Bid", highestBid)
     }
-    catch(err){
+    catch (err) {
       setHighestBid(null)
     }
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     getHighestBid()
-  },[])
+  }, [])
 
   if (!auction) {
     return <div className="text-white">Auction data not found</div>;
   }
 
-    // Lock background scroll when popup is open
-    useEffect(() => {
-      if (biddingPopUp) {
-        document.body.style.overflow = 'hidden';
-      } else {
-        document.body.style.overflow = '';
-      }
-  
-      // return clean up function
-      return () => {
-        document.body.style.overflow = '';
-      };
-    }, [biddingPopUp]);
-  
-    if (!auction) {
-      return <div className="text-white">Auction data not found</div>;
+  // Lock background scroll when popup is open
+  useEffect(() => {
+    if (biddingPopUp) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
     }
 
-  const currentLevelXP = Number(nft.xp);
-  const xpToNextLevel = Number(nft.xp_to_next_level);
-  const xpProgress = (currentLevelXP/ (currentLevelXP+xpToNextLevel))*100 ;
+    // return clean up function
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [biddingPopUp]);
 
-  const getRarityStyle = (rarity:string) => {
+  if (!auction) {
+    return <div className="text-white">Auction data not found</div>;
+  }
+
+  const getRarityStyle = (rarity: string) => {
     const baseStyles = {
       common: 'bg-gray-700 text-gray-200',
       uncommon: 'bg-green-900 text-green-200',
@@ -77,7 +73,7 @@ const AuctionNFTDetails = () => {
     };
 
     const base = baseStyles[rarity as keyof typeof baseStyles] || baseStyles.common;
-    const border = borderStyles[rarity  as keyof typeof borderStyles] || borderStyles.common;
+    const border = borderStyles[rarity as keyof typeof borderStyles] || borderStyles.common;
 
     return `${base} ${border}`;
   };
@@ -87,10 +83,10 @@ const AuctionNFTDetails = () => {
       <div className="min-h-screen bg-gradient-to-br from-black to-gray-900 overflow-hidden">
         <div className="bg-gray-800 shadow-lg border-b border-gray-700">
           <div className="max-w-6xl mx-auto px-6 py-4">
-            <button 
+            <button
               className="flex items-center text-gray-300 hover:text-orange-500 transition-colors"
-              onClick={()=>navigate(-1)}
-              >
+              onClick={() => navigate(-1)}
+            >
               Go Back
             </button>
           </div>
@@ -100,14 +96,14 @@ const AuctionNFTDetails = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             <div className="space-y-6">
               <div className="bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-700">
-              <div className="aspect-square bg-gradient-to-br from-gray-700 to-gray-600 flex items-center justify-center p-12">
-                <div className="text-9xl transform hover:scale-110 transition-transform duration-300 w-full h-full">
-                  <img className='w-full h-full object-cover rounded-2xl' src={nft.mediaURL} alt={nft.name}/>
+                <div className="aspect-square bg-gradient-to-br from-gray-700 to-gray-600 flex items-center justify-center p-12">
+                  <div className="text-9xl transform hover:scale-110 transition-transform duration-300 w-full h-full">
+                    <img className='w-full h-full object-cover rounded-2xl' src={nft.mediaURL} alt={nft.name} />
+                  </div>
                 </div>
               </div>
-            </div>
 
-            
+
             </div>
 
             <div className="space-y-8">
@@ -119,7 +115,7 @@ const AuctionNFTDetails = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
                   <div className="flex items-center mb-2">
-                    
+
                     <span className="text-sm font-medium text-gray-400">Level</span>
                   </div>
                   <div className="text-3xl font-bold text-white">{nft.level}</div>
@@ -132,19 +128,19 @@ const AuctionNFTDetails = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 {(highestBid) ? (
-                <div className="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
-                  <div className="text-sm text-gray-400 mb-2">Current Bid</div>
-                  <div className="text-2xl font-bold text-orange-400">{highestBid.amount/1e9} SUI</div>
-                </div>
-                ):(
+                  <div className="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
+                    <div className="text-sm text-gray-400 mb-2">Current Bid</div>
+                    <div className="text-2xl font-bold text-orange-400">{highestBid.amount / 1e9} SUI</div>
+                  </div>
+                ) : (
                   <div className="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
                     <div className="text-sm text-gray-400 mb-2">Minimum Bid</div>
-                    <div className="text-2xl font-bold text-green-400">{auction.minPrice/1e9} SUI</div>
+                    <div className="text-2xl font-bold text-green-400">{auction.minPrice / 1e9} SUI</div>
                   </div>
-                )}            
+                )}
                 <div className="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
                   <div className="text-sm text-gray-400 mb-2">Ending In</div>
                   <div className="text-2xl font-bold text-red-400">{(endDate).toLocaleDateString()}</div>
@@ -152,25 +148,25 @@ const AuctionNFTDetails = () => {
               </div>
 
               <div className="flex gap-4">
-                <button 
+                <button
                   className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-4 px-6 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl cursor-pointer"
                   onClick={() => setBiddingPopUp(true)}
                 >
                   Place Bid
                 </button>
               </div>
-              
-              
-              
+
+
+
             </div>
           </div>
         </div>
-        
+
       </div>
       <BiddingPopup
         isOpen={biddingPopUp}
         onClose={() => setBiddingPopUp(false)}
-        auction = {auction}
+        auction={auction}
       />
     </>
   );

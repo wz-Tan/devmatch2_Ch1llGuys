@@ -1,21 +1,10 @@
-import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from '@mysten/dapp-kit';
-import React, { useEffect, useState } from 'react'
-import { useNetworkVariable } from '../networkConfig';
-import { MARKETPLACE_ID, NFT_TYPE } from '../constants';
-import { Transaction } from '@mysten/sui/transactions';
+import { useSuiClient } from '@mysten/dapp-kit';
+import { useEffect, useState } from 'react'
+import { MARKETPLACE_ID } from '../constants';
 
 const Landing = () => {
-    let userAccount = useCurrentAccount();
-    const packageID = useNetworkVariable("PackageId");
     const suiClient = useSuiClient();
-    const [displayList, setDisplayList] = useState<object[]>([]);
-    const [popUp, setPopUp] = useState(false)
-    const [ownedNFTs, setOwnedNFTs] = useState<object[]>([]);
-
-
-    const {
-        mutate: signAndExecute,
-    } = useSignAndExecuteTransaction();
+    const [_, setDisplayList] = useState<object[]>([]);
 
     useEffect(() => { fetchMarketplace() }, [])
 
@@ -63,94 +52,6 @@ const Landing = () => {
         }))
 
         setDisplayList(actualListings)
-    }
-
-    async function retrieveOwnedNFT(): Promise<object[]> {
-        let userNFTs: object[] = [];
-        let res = await suiClient.getOwnedObjects({
-            owner: userAccount!.address,
-            options: {
-                showType: true
-            }
-        });
-
-        let ownedAsset = res.data;
-
-        //Filter Out Valid NFTs
-        await Promise.all(ownedAsset.map(async (asset) => {
-            if (asset.data?.type === NFT_TYPE) {
-                let nftItem = await suiClient.getObject({
-                    id: asset.data.objectId,
-                    options: {
-                        showContent: true,
-                    }
-                });
-                if (nftItem.data?.content?.dataType === "moveObject") userNFTs.push(nftItem.data?.content?.fields)
-            }
-        }))
-        return userNFTs
-    }
-
-    async function createListing(nft: string, price: number) {
-        const tx = new Transaction();
-
-        tx.moveCall({
-            arguments: [tx.object(MARKETPLACE_ID), tx.object(nft), tx.pure.u64(price)],
-            target: `${packageID}::marketplace::createListing`
-        });
-
-        //Continue Here
-        signAndExecute({ transaction: tx },
-            {
-                onSuccess: async ({ digest }) => {
-                    await suiClient.waitForTransaction({
-                        digest: digest,
-                        options: {
-                            showEffects: true,
-                        },
-                    });
-                    fetchMarketplace()
-                }
-            }
-        )
-    }
-
-    async function buyListing(listing_id: string) {
-        const tx = new Transaction();
-
-        let listing=await suiClient.getObject({
-            id: listing_id, 
-            options:{showContent: true}
-        })
-
-
-        let listing_price;
-
-        if (listing.data?.content?.dataType==="moveObject"){ 
-            listing_price= Number((listing as any).data?.content?.fields.price)}
-      
-
-        const fees=tx.splitCoins(tx.gas,[tx.pure.u64(listing_price!)])
-
-            
-        tx.moveCall({
-            arguments: [tx.object(MARKETPLACE_ID), tx.object(fees), tx.object(listing_id)],
-            target: `${packageID}::marketplace::buyListing`
-        });
-
-        signAndExecute({ transaction: tx },
-            {
-                onSuccess: async ({ digest }) => {
-                    await suiClient.waitForTransaction({
-                        digest: digest,
-                        options: {
-                            showEffects: true,
-                        },
-                    });
-                    fetchMarketplace()
-                }
-            }
-        )
     }
 
     return (

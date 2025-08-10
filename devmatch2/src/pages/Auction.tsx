@@ -1,17 +1,12 @@
-import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from '@mysten/dapp-kit'
+import { useSuiClient } from '@mysten/dapp-kit'
 import { useEffect, useState } from 'react'
 import { AUCTIONHOUSE_ID } from '../constants';
 import AuctionCard from '../components/AuctionCard';
 import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
-import { useNetworkVariable } from '../networkConfig';
 
 const Auction = () => {
-  const userAccount = useCurrentAccount();
   const suiClient = useSuiClient();
-  const packageID = useNetworkVariable("PackageId");
-
-  const { mutate: signAndExecute } = useSignAndExecuteTransaction();
   const [auctions, setAuctions] = useState<any[]>([]);
 
   useEffect(() => { retrieveAuctionHouse() }, [])
@@ -49,7 +44,7 @@ const Auction = () => {
     }))
 
     setAuctions(actualListings);
-    console.log("Auction House",auctionHouse)
+    console.log("Auction House", auctionHouse)
   }
 
   //Frontend Hooks

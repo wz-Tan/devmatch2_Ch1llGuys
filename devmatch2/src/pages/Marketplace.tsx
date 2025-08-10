@@ -1,23 +1,12 @@
-import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from '@mysten/dapp-kit';
+import { useSuiClient } from '@mysten/dapp-kit';
 import { useEffect, useState } from 'react'
-import { CLOCK_ID, MARKETPLACE_ID } from '../constants';
-import { Transaction } from '@mysten/sui/transactions';
-import { useNetworkVariable } from '../networkConfig';
-import { Button } from '@radix-ui/themes';
-import Navbar from '../components/Navbar';
-import NFTCard from '../components/ListingNFTCard';
-import { Link, useNavigate } from 'react-router-dom';
+import { MARKETPLACE_ID } from '../constants';
+import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
 import ListingNFTCard from '../components/ListingNFTCard';
 
 const Marketplace = () => {
-  const userAccount = useCurrentAccount();
   const suiClient = useSuiClient();
-  const packageID = useNetworkVariable("PackageId");
-
-  const navigate = useNavigate();
-
-  const { mutate: signAndExecute } = useSignAndExecuteTransaction();
   const [marketplaceItems, setMarketplaceItems] = useState<any[]>([])
 
 
@@ -57,77 +46,8 @@ const Marketplace = () => {
     }))
 
     setMarketplaceItems(actualListings);
-    console.log("Marketplace",marketplace)
+    console.log("Marketplace", marketplace)
   }
-
-  //Create A New Listing
-  async function createListing(nft: string, price: number) {
-    const tx = new Transaction();
-    price = Math.floor(price * 1e9);
-
-    tx.moveCall({
-      arguments: [tx.object(MARKETPLACE_ID), tx.object(nft), tx.pure.u64(price), tx.object(CLOCK_ID)],
-      target: `${packageID}::marketplace::createListing`
-    });
-
-    signAndExecute({ transaction: tx },
-      {
-        onSuccess: async ({ digest }) => {
-          await suiClient.waitForTransaction({
-            digest: digest,
-            options: {
-              showEffects: true,
-            },
-          });
-          //Refresh on Finish (settled)
-          navigate(-1);
-          retrieveMarketplace()
-        }
-      }
-    )
-  }
-
-  async function buyListing(listing_id: string) {
-    const tx = new Transaction();
-
-    let listing = await suiClient.getObject({
-      id: listing_id,
-      options: {
-        showContent: true
-      }
-    })
-
-    let listing_price;
-
-    if (listing.data?.content?.dataType === "moveObject") {
-      listing_price = Number((listing as any).data?.content?.fields.price)
-    }
-
-
-    const fees = tx.splitCoins(tx.gas, [tx.pure.u64(listing_price!)])
-
-    tx.moveCall({
-      arguments: [tx.object(MARKETPLACE_ID), tx.object(fees), tx.object(listing_id)],
-      target: `${packageID}::marketplace::buyListing`
-    })
-
-    signAndExecute({ transaction: tx },
-      {
-        onSuccess: async ({ digest }) => {
-          await suiClient.waitForTransaction({
-            digest: digest,
-            options: {
-              showEffects: true,
-            },
-          });
-          //Refresh on Finish (settled)
-          navigate(-1);
-          retrieveMarketplace()
-        }
-      }
-    )
-  }
-
 
   //Frontend Hooks
   const [visibleItems, setVisibleItems] = useState(12);

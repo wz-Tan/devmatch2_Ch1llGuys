@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 // import { WalletAccount } from '@wallet-standard/base';
 // import { SuiClient } from '@mysten/sui/client';
-import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from '@mysten/dapp-kit';
+import { useSignAndExecuteTransaction, useSuiClient } from '@mysten/dapp-kit';
 import { Transaction } from '@mysten/sui/transactions';
 import { useNetworkVariable } from '../networkConfig';
-import { Button, Container, Heading, TextField, Text } from '@radix-ui/themes'
+import { Text } from '@radix-ui/themes'
 import Footer from '../components/Footer';
 import '../index.css';
 import { useNavigate } from 'react-router-dom';
@@ -13,7 +13,6 @@ import { useNavigate } from 'react-router-dom';
 const Minting = () => {
     let navigate = useNavigate();
 
-    let userAccount = useCurrentAccount();
     const packageID = useNetworkVariable("PackageId");
     const suiClient = useSuiClient();
 
@@ -53,7 +52,7 @@ const Minting = () => {
                     });
 
 
-                    let digestInfo = await suiClient.getTransactionBlock({
+                    await suiClient.getTransactionBlock({
                         digest: digest,
                         options: {
                             showBalanceChanges: true,
